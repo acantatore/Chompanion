@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
+    <link href="/static/960_12_col.css" rel='stylesheet' type='text/css'>
+    <link href="/static/960_12_col.css" rel='stylesheet' type='text/css'>
+</head>
+<body>
+{% if bio %}
+    <div id="username"><p>{{ bio[0].user.nickname() }}</p></div>
+    <div id="height"><p>{{ bio[0].height }}</p></div>
+    <div id="Target"><p>{{ bio[0].target }}</p></div>
+    {% if entries %}
+        {% for entry in entries %}
+            <div id="logdata"><p>{{ entry.weight | escape }}|{{ entry.date | escape }}</p></div>
+        {% endfor %}
+    {% endif %}
+    <form action="/log" method="post">
+        <div class="inputs">Altura:<input value="{{ bio[0].height }}" name="height"></div>
+        <div class="inputs">Objetivo:<input value="{{ bio[0].target }}" name="target"></div>
+        <div class="inputs">Peso:<input value="" name="weight"></div>
+        <div class="inputs">Fecha:<input value="" name="date"></div>
+        <div><input type="submit" value="Log"></div>
+    </form>
+{% elif entries %}
+    {% for entry in entries %}
+        <div id="logdata"><p>{{ entry.weight | escape }}|{{ entry.date | escape }}</p></div>
+    {% endfor %}
+    <form action="/log" method="post">
+        <div class="inputs">Altura:<input value="" name="height"></div>
+        <div class="inputs">Objetivo:<input value="" name="target"></div>
+        <div class="inputs">Peso:<input value="" name="weight"></div>
+        <div class="inputs">Fecha:<input value="" name="date"></div>
+        <div><input type="submit" value="Log"></div>
+    </form>
+{% else %}
+    <form action="/log" method="post">
+        <div class="inputs">Altura:<input value="" name="height"></div>
+        <div class="inputs">Objetivo:<input value="" name="target"></div>
+        <div class="inputs">Peso:<input value="" name="weight"></div>
+        <div class="inputs">Fecha:<input value="" name="date"></div>
+        <div><input type="submit" value="Log"></div>
+    </form>
+{% endif %}
+
+<a href="{{ url }}">{{ url_linktext }}</a>
+
+</body>
+</html>
