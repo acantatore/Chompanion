@@ -185,10 +185,6 @@ class logTest(unittest.TestCase):
         expected = False
         assert expected == actual, 'error'
 
-
-
-
-
     def runTest(self):
 
         self.validateBioValuesTest()
