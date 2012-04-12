@@ -31,9 +31,15 @@
     <div id="height"><p>{{ bio[0].height }}</p></div>
     <div id="Target"><p>{{ bio[0].target }}</p></div>
     {% if entries %}
-        {% for entry in entries %}
-            <div><p>{{ entry.weight | escape }}|{{ entry.date | escape }}</p></div>
-        {% endfor %}
+        <ul>
+            {% for entry in entries %}
+                <form action="/delete" method="post">
+                    <div><li>{{ entry.weight | escape }}|{{ entry.date | escape }}
+                    <input type="hidden" value="{{entry.date}}" name="delData">
+                    <input type="submit" value="Delete" ></li></div>
+                </form>
+            {% endfor %}
+        </ul>
     {% endif %}
     <form action="/log" method="post">
         <div class="inputs">Altura:<input value="{{ bio[0].height }}" name="height"></div>

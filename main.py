@@ -59,7 +59,7 @@ class MainPage(webapp2.RequestHandler):
             url_linktext = 'Logout'
             log_name = bio_name = (users.get_current_user().user_id())
             bio_query = Biometric.all().ancestor(bio_key(bio_name))
-            log_query = Entry.all().ancestor(log_key(log_name))
+            log_query = Entry.all().ancestor(log_key(log_name)).order("-date")
             template = jinja_environment.get_template('/template/Index.html')
             return template.render(self.createLoggedTemplates(bio_query,log_query,url,url_linktext))
         else:
@@ -76,7 +76,26 @@ class MainPage(webapp2.RequestHandler):
 
         self.response.out.write(self.createTemplate(users.get_current_user(),self.request.uri))
 
+class Delete(webapp2.RequestHandler):
+    def post(self):
 
+        try:
+            userid = users.get_current_user().user_id()
+            self.deleteRecord(self.request.get('delData'))
+            self.redirect('/?' + urllib.urlencode({'log_name': userid}))
+        except ValueError:
+            self.redirect('/?' + urllib.urlencode({'log_name': "Anon"}))
+
+#TODO Formatear la fecha para que el input sea igual que el output
+
+    def deleteRecord(self,request):
+
+        userid = users.get_current_user().user_id()
+        logDate=dt.datetime.strptime(request,"%Y-%m-%d").date()
+        logQuery = Entry.all().ancestor(log_key(userid)).filter('date =', logDate)
+        results=logQuery.fetch(1)
+        for r in results:
+            r.delete()
 
 class Log(webapp2.RequestHandler):
     def post(self):
@@ -132,5 +151,5 @@ class Log(webapp2.RequestHandler):
         return query.count(1)
 
 
-app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log),('/delete',Delete)], debug=True)
 
