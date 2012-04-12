@@ -20,53 +20,61 @@ jinja_environment = jinja2.Environment(
 
 
 class MainPage(webapp2.RequestHandler):
-    def get(self):
-        if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
+
+    def createLoggedTemplates(self,bio_query,log_query,url,url_linktext):
+
+        if bio_query.count(1) == 0 and log_query.count(1) == 0:
+            template_values = {
+                'bio': None,
+                'entries': None,
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        elif bio_query.count(1) > 0 and log_query.count(1) == 0:
+            template_values = {
+                'bio': bio_query.fetch(1),
+                'entries': None,
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        elif bio_query.count(1) == 0 and log_query.count(1) > 0:
+            template_values = {
+                'bio': None,
+                'entries': bio_query.fetch(7),
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        else:
+            template_values = {
+                'bio': bio_query.fetch(1),
+                'entries': log_query.fetch(7),
+                'url': url,
+                'url_linktext': url_linktext,}
+        return template_values
+
+    def createTemplate(self,currentUser,uri):
+        if currentUser:
+            url = users.create_logout_url(uri)
             url_linktext = 'Logout'
             log_name = bio_name = (users.get_current_user().user_id())
             bio_query = Biometric.all().ancestor(bio_key(bio_name))
             log_query = Entry.all().ancestor(log_key(log_name))
-            if bio_query.count(1) == 0 and log_query.count(1) == 0:
-                template_values = {
-                    'bio': None,
-                    'entries': None,
-                    'url': url,
-                    'url_linktext': url_linktext,
-                    }
-            elif bio_query.count(1) == 1 and log_query.count(1) == 0:
-                template_values = {
-                    'bio': bio_query.fetch(1),
-                    'entries': None,
-                    'url': url,
-                    'url_linktext': url_linktext,
-                    }
-            elif bio_query.count(1) == 0 and log_query.count(1) > 1:
-                template_values = {
-                    'bio': None,
-                    'entries': bio_query.fetch(7),
-                    'url': url,
-                    'url_linktext': url_linktext,
-                    }
-            else:
-                template_values = {
-                    'bio': bio_query.fetch(1),
-                    'entries': log_query.fetch(7),
-                    'url': url,
-                    'url_linktext': url_linktext,
-                    }
             template = jinja_environment.get_template('/template/Index.html')
-            self.response.out.write(template.render(template_values))
-
+            return template.render(self.createLoggedTemplates(bio_query,log_query,url,url_linktext))
         else:
-            url = users.create_login_url(self.request.uri)
+            url = users.create_login_url(uri)
             url_linktext = 'Login'
             template_values = {
                 'url': url,
                 'url_linktext': url_linktext,
-                }
+            }
             template = jinja_environment.get_template('/template/Login.html')
-            self.response.out.write(template.render(template_values))
+            return template.render(template_values)
+
+    def get(self):
+
+        self.response.out.write(self.createTemplate(users.get_current_user(),self.request.uri))
+
 
 
 class Log(webapp2.RequestHandler):
