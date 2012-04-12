@@ -1,15 +1,16 @@
 import urllib
 import datetime as dt
-import locale
+
 import webapp2
 
 from model import Entry, log_key
 from model import Biometric, bio_key
 
+
+
 from google.appengine.api import users
 
-from libs.parsedatetime import parsedatetime as pdt
-from libs.parsedatetime import parsedatetime_consts as pdc
+
 
 import jinja2
 import os
@@ -101,12 +102,11 @@ class Log(webapp2.RequestHandler):
 
 
     def validateEntryValues(self, date, weight, userid):
-        c = pdc.Constants()
-        p = pdt.Calendar(c)
+
         entry = Entry(parent=log_key(userid))
         if date and weight:
-            logDate = dt.datetime(p.parse(date)[0][0], p.parse(date)[0][1],
-                p.parse(date)[0][2])
+
+            logDate = dt.datetime.strptime(date,"%d/%m/%Y").date()
             logWeight = float(weight)
             logQuery = Entry.all().ancestor(log_key(userid)).filter('date =', logDate)
             if  self.checkEntry(logWeight, logQuery) < 1:

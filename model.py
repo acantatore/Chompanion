@@ -7,7 +7,7 @@ class Entry(db.Model):
     """Weight Table with Variance"""
     user = db.UserProperty()
     timestamp = db.DateTimeProperty(auto_now_add=True)
-    date = db.DateTimeProperty()
+    date = db.DateProperty()
     weight = db.FloatProperty(default=0.00)
     variance = db.FloatProperty(default=0.00)
 

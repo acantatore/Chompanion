@@ -20,7 +20,7 @@ class TestModelBio(db.Model):
 class TestModelEntry(db.Model):
     user = db.UserProperty()
     timestamp = db.DateTimeProperty(auto_now_add=True)
-    date = db.DateTimeProperty()
+    date = db.DateProperty()
     weight = db.FloatProperty(default=100.00)
     variance = db.FloatProperty(default=1.00)
 
@@ -87,8 +87,6 @@ class modelTest(unittest.TestCase):
 class mainTest(unittest.TestCase):
     def createTemplateTest(self):
         request = webapp2.Request.blank('/')
-        url = users.create_logout_url(request.uri)
-        url_linktext = 'Logout'
         cut = MainPage()
         cut.createTemplate(users.get_current_user(),request.uri)
         cut.createTemplate(None,request.uri)
@@ -166,12 +164,13 @@ class logTest(unittest.TestCase):
 
     def validateEntryValuesTest(self):
         cut = Log()
-        date = dt.datetime
+        date = dt.date(2012,10,10).strftime("%d/%m/%Y")
+
         mockUser = users.User("test@test", "gmail.com", "AAA")
-        actual = cut.validateEntryValues(str(date.now()), 100, mockUser.user_id())
+        actual = cut.validateEntryValues(str(date), 100, mockUser.user_id())
         expected = True
         assert expected == actual, 'ok'
-        actual = cut.validateEntryValues(str(date.now()), None, mockUser.user_id())
+        actual = cut.validateEntryValues(str(date), None, mockUser.user_id())
         expected = False
         assert expected == actual, 'error'
 
