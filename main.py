@@ -1,6 +1,6 @@
 import urllib
 import datetime as dt
-
+import locale
 import webapp2
 
 from model import Entry, log_key
@@ -40,7 +40,7 @@ class MainPage(webapp2.RequestHandler):
         elif bio_query.count(1) == 0 and log_query.count(1) > 0:
             template_values = {
                 'bio': None,
-                'entries': bio_query.fetch(7),
+                'entries': log_query.fetch(7),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
