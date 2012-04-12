@@ -46,7 +46,8 @@ class checkBioTest(unittest.TestCase):
         handler = Log()
         handler.initialize(request, response)
         handler.post()
-        self.assertEqual(response.status, "200 OK")
+        #self.assertIsInstance(response,webapp2.Response)
+        self.assertEqual(response.status, "302 Moved Temporarily")
 
     def validateEntryValuesTest(self):
         cut = Log()
