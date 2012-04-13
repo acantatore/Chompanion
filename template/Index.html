@@ -24,37 +24,63 @@
 
 <body>
 <div class="container_16">
-    <div class="grid_16 header"></div>
+    <div class="grid_16 header"><h1>TITULO</h1></div>
     <div class="clear"></div>
 {% if bio %}
     <div class="grid_16 header">
-        <div id="username"><p>{{ bio[0].user.nickname() }}</p></div>
-        <div id="height"><p>{{ bio[0].height }}</p></div>
-        <div id="Target"><p>{{ bio[0].target }}</p></div>
+        <div id="username"><h3>{{ bio[0].user.nickname() }}</h3></div>
     </div>
     <div class="clear"></div>
-    <div class="grid_1 ending">1</div>
+    <div class="grid_1"></div>
     {% if entries %}
         <!--<ul>-->
+    <form action="/delete" method="post">
             {% for entry in entries %}
-                <form action="/delete" method="post">
+
+                {% if loop.length > 7 %}
+                    {% if loop.index > 1%}
+        <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
+            <input type="hidden" value="{{entry.date}}" name="delData">
+            <input class="del_button" type="submit" value="" >
+        </div>
+                    {% endif %}
+                {% else %}
+                    {% if loop.index > 1%}
                     <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
+                        {% if entry.weight > entries[loop.index-2].weight %}
+                        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+                        {% else %}
+                        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+                        {% endif %}
                     <input type="hidden" value="{{entry.date}}" name="delData">
-                    <input class="del_button" type="submit" value="" ></div>
-                </form>
+                    <input class="del_button" type="submit" value="" >
+                    </div>
+                    {% else %}
+                    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p><p style="font-size: 0.9em;">0.0</p>
+                    <input type="hidden" value="{{entry.date}}" name="delData">
+                    <input class="del_button" type="submit" value="" >
+                    </div>
+                    {% endif %}
+
+                {% endif %}
+
+
+
+
             {% endfor %}
         <!--</ul>-->
     {% endif %}
-    <div class="grid_1 ending">1</div>
+    </form>
+    <div class="grid_1"></div>
     <div class="clear"></div>
-    <div class="grid_16 header">16</div>
+    <div class="grid_16 ending"></div>
     <div class="clear"></div>
     <form action="/log" method="post">
         <div class="grid_4 bottom">Altura:<input value="{{ bio[0].height }}" name="height"></div>
         <div class="grid_4 bottom">Objetivo:<input value="{{ bio[0].target }}" name="target"></div>
         <div class="grid_4 bottom">Peso:<input value="" name="weight"></div>
         <div class="grid_4 bottom">Fecha:<input class="date-pick" value="" name="date"></div>
-        <div class="grid_16 header"><input type="submit" value="Log"></div>
+        <div class="grid_16 ending"><input type="submit" value="Log"></div>
     </form>
 {% elif entries %}
     {% for entry in entries %}

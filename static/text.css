@@ -1,27 +1,56 @@
 
 div.header{
-    background-color: #CC3399;
+    background-color: #1f211b;
+    color: #11bbff
 }
 
 div.ending{
-    background-color: #AAAAAA;
+    background-color: #dd3322;
+}
+body{
+    background-color: #41b6c4    ;
+}
+p.pos{
+color: #dd3322;
+}
+p.neg{
+color: #bbff66;
+}
+p#po{
+    color: #dd3322;
+    font-family: Arial;
+    font-size: 0.9em;
+}
+
+
+p#ne{
+    color: #bbff66;
+    font-family: Arial;
+    font-size: 0.9em;
 }
 div.data p{
-    font-size: 1.2em
+    font-size: 1.2em;
+    color: #1f211b;
+    font-family: "oxygen"
+
 }
 div.data h3{
-    font-size: 2.0em
+    font-size: 2.0em;
+    color: #1f211b;
+    font-family: "Oleo Script"
 }
 div.data{
     width: 90%;
-    background-image: url("data_bgr.png");
-    background-repeat:no-repeat;
+    background-image: url("/static/data_bgr.png");
+    background-repeat:  no-repeat;
+    background-color: #7fcdbb        ;
     height:90%;
     text-align: center;
-    line-height: 50%
+    line-height: 50%;
+
 }
 div.bottom{
-    background-color: #FF8899;
+    background-color: #1d91c0    ;
 }
 div#loginLink {
     text-align: right;

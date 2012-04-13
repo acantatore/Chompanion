@@ -35,14 +35,14 @@ class MainPage(webapp2.RequestHandler):
 
             template_values = {
                 'bio': bio_query.fetch(1),
-                'entries': sorted(log_query.fetch(7),key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(8),key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
         elif bio_query.count(1) == 0 and log_query.count(1) > 0:
             template_values = {
                 'bio': None,
-                'entries': sorted(log_query.fetch(7),key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(8),key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
