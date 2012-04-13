@@ -1,6 +1,6 @@
 import urllib
 import datetime as dt
-
+from operator import attrgetter
 import webapp2
 
 from model import Entry, log_key
@@ -31,24 +31,25 @@ class MainPage(webapp2.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext,
                 }
-        elif bio_query.count(1) > 0 and log_query.count(1) == 0:
+        elif bio_query.count(1) > 0 and log_query.count(1) > 0:
+
             template_values = {
                 'bio': bio_query.fetch(1),
-                'entries': None,
+                'entries': sorted(log_query.fetch(7),key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
         elif bio_query.count(1) == 0 and log_query.count(1) > 0:
             template_values = {
                 'bio': None,
-                'entries': log_query.fetch(7),
+                'entries': sorted(log_query.fetch(7),key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
         else:
             template_values = {
                 'bio': bio_query.fetch(1),
-                'entries': log_query.fetch(7),
+                'entries': None,
                 'url': url,
                 'url_linktext': url_linktext,}
         return template_values

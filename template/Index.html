@@ -4,49 +4,57 @@
 <head>
     <title>Chompanion</title>
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
-    <link href="/static/960_12_col.css" rel='stylesheet' type='text/css'>
+    <link href="/static/960_16_col.css" rel='stylesheet' type='text/css'>
     <link href="/static/text.css" rel='stylesheet' type='text/css'>
     <link href="/static/datePicker.css" rel='stylesheet' type='text/css'>
     <!-- jQuery -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-
     <!-- required plugins -->
     <script type="text/javascript"  src="/static/date.js"></script>
     <!--[if IE]><script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script><![endif]-->
-
     <!-- jquery.datePicker.js -->
     <script type="text/javascript" src="/static/jquery.datePicker.js"></script>
-
     <script type="text/javascript" charset="utf-8">
         $(function()
         {
             $('.date-pick').datePicker({autoFocusNextInput: true});
         });
     </script>
-
 </head>
+
 <body>
+<div class="container_16">
+    <div class="grid_16 header"></div>
+    <div class="clear"></div>
 {% if bio %}
-    <div id="username"><p>{{ bio[0].user.nickname() }}</p></div>
-    <div id="height"><p>{{ bio[0].height }}</p></div>
-    <div id="Target"><p>{{ bio[0].target }}</p></div>
+    <div class="grid_16 header">
+        <div id="username"><p>{{ bio[0].user.nickname() }}</p></div>
+        <div id="height"><p>{{ bio[0].height }}</p></div>
+        <div id="Target"><p>{{ bio[0].target }}</p></div>
+    </div>
+    <div class="clear"></div>
+    <div class="grid_1 ending">1</div>
     {% if entries %}
-        <ul>
+        <!--<ul>-->
             {% for entry in entries %}
                 <form action="/delete" method="post">
-                    <div><li>{{ entry.weight | escape }}|{{ entry.date | escape }}
+                    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
                     <input type="hidden" value="{{entry.date}}" name="delData">
-                    <input type="submit" value="Delete" ></li></div>
+                    <input class="del_button" type="submit" value="" ></div>
                 </form>
             {% endfor %}
-        </ul>
+        <!--</ul>-->
     {% endif %}
+    <div class="grid_1 ending">1</div>
+    <div class="clear"></div>
+    <div class="grid_16 header">16</div>
+    <div class="clear"></div>
     <form action="/log" method="post">
-        <div class="inputs">Altura:<input value="{{ bio[0].height }}" name="height"></div>
-        <div class="inputs">Objetivo:<input value="{{ bio[0].target }}" name="target"></div>
-        <div class="inputs">Peso:<input value="" name="weight"></div>
-        <div class="inputs">Fecha:<input class="date-pick" value="" name="date"></div>
-        <div><input type="submit" value="Log"></div>
+        <div class="grid_4 bottom">Altura:<input value="{{ bio[0].height }}" name="height"></div>
+        <div class="grid_4 bottom">Objetivo:<input value="{{ bio[0].target }}" name="target"></div>
+        <div class="grid_4 bottom">Peso:<input value="" name="weight"></div>
+        <div class="grid_4 bottom">Fecha:<input class="date-pick" value="" name="date"></div>
+        <div class="grid_16 header"><input type="submit" value="Log"></div>
     </form>
 {% elif entries %}
     {% for entry in entries %}
@@ -70,6 +78,6 @@
 {% endif %}
 
 <a href="{{ url }}">{{ url_linktext }}</a>
-
+</div>
 </body>
 </html>
