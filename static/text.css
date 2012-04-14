@@ -40,11 +40,11 @@ div.data h3{
     font-family: "Oleo Script"
 }
 div.data{
-    width: 90%;
+    width: 100%;
     background-image: url("/static/data_bgr.png");
     background-repeat:  no-repeat;
     background-color: #7fcdbb        ;
-    height:90%;
+    height:100%;
     text-align: center;
     line-height: 50%;
 
