@@ -3,43 +3,113 @@
 <html>
 <head>
     <title>Chompanion</title>
+
+
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
     <link href="/static/960_16_col.css" rel='stylesheet' type='text/css'>
     <link href="/static/text.css" rel='stylesheet' type='text/css'>
-    <link href="/static/datePicker.css" rel='stylesheet' type='text/css'>
+    <link href="/static/jquery-ui.css" rel='stylesheet' type='text/css'>
     <!-- jQuery -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery.min.js"></script>
     <!-- required plugins -->
     <script type="text/javascript"  src="/static/date.js"></script>
     <!--[if IE]><script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script><![endif]-->
     <!-- jquery.datePicker.js -->
     <script type="text/javascript" src="/static/jquery.datePicker.js"></script>
+    <!-- JqPlot -->
+
+
+    <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.barRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.cursor.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.highlighter.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.dragable.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.trendline.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" hrf="/static/jquery.jqplot.min.css" />
     <script type="text/javascript" charset="utf-8">
-        $(function()
-        {
-            $('.date-pick').datePicker({autoFocusNextInput: true});
+        $(function(){
+            var pickerOpts = {
+                dateFormat:"dd/mm/yy"
+            };
+            $("#datepicker").datepicker(pickerOpts);
         });
     </script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+
+            $.jqplot.config.enablePlugins = true;
+            s1 = [
+                {% if entries %}
+                    {% for entry in entries %}
+                        {% if loop.last %}
+                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
+                        {% else %}
+                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+            ]
+            plot1 = $.jqplot('chart1',[s1],{
+                title: 'Peso y Tendencia',
+                axes: {
+                    xaxis: {
+                        renderer: $.jqplot.DateAxisRenderer,
+                        tickOptions: {
+                            formatString: '%#d/%#m/%y'
+                        },
+                        numberTicks: 10
+                    },
+                    yaxis: {
+                        tickOptions: {
+                            formatString: '%.3P'
+                        }
+                    }
+                },
+                highlighter: {
+                    sizeAdjust: 10,
+                    tooltipLocation: 'n',
+                    tooltipAxes: 'y',
+                    useAxesFormatters: false
+                },
+                cursor: {
+                    show: false
+                }
+            });
+        });
+    </script>
+
 </head>
 
 <body>
 <div class="container_16">
-    <div class="grid_16 header"><h1>TITULO</h1></div>
+    <div class="grid_16 header"><h3>TITULO</h3></div>
     <div class="clear"></div>
 {% if bio %}
     <div class="grid_16 header">
-        <div id="username"><h3>{{ bio[0].user.nickname() }}</h3></div>
+        <div id="username"><p>{{ bio[0].user.nickname() }} | <a href="{{ url }}">{{ url_linktext }}</a></p>
+        <p>
+            <div id="chart1" style="height:300px;width:900px; "></div></p>
+        </div>
     </div>
     <div class="clear"></div>
-    <div class="grid_1"></div>
+    <div class="grid_1"><p></p></div>
     {% if entries %}
         <!--<ul>-->
     <form action="/delete" method="post">
             {% for entry in entries %}
 
-                {% if loop.length > 7 %}
-                    {% if loop.index > 1%}
+                {% if loop.length > 7  %}
+                    {% if loop.index > 1 and loop.index < 9%}
         <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
+            {% if entry.weight > entries[loop.index-2].weight %}
+            <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+            {% else %}
+            <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+            {% endif %}
             <input type="hidden" value="{{entry.date}}" name="delData">
             <input class="del_button" type="submit" value="" >
         </div>
@@ -71,15 +141,15 @@
         <!--</ul>-->
     {% endif %}
     </form>
-    <div class="grid_1"></div>
+    <div class="grid_1"><p></p></div>
     <div class="clear"></div>
     <div class="grid_16 ending"></div>
     <div class="clear"></div>
     <form action="/log" method="post">
-        <div class="grid_4 bottom">Altura:<input value="{{ bio[0].height }}" name="height"></div>
-        <div class="grid_4 bottom">Objetivo:<input value="{{ bio[0].target }}" name="target"></div>
-        <div class="grid_4 bottom">Peso:<input value="" name="weight"></div>
-        <div class="grid_4 bottom">Fecha:<input class="date-pick" value="" name="date"></div>
+        <div class="grid_4 bottom"><p><input value="{{ bio[0].height }}" name="height"></p></div>
+        <div class="grid_4 bottom"><p><input value="{{ bio[0].target }}" name="target"></p></div>
+        <div class="grid_4 bottom"><p><input value="" name="weight"></p></div>
+        <div class="grid_4 bottom"><p><input id="datepicker" type="text" name="date"></p></div>
         <div class="grid_16 ending"><input type="submit" value="Log"></div>
     </form>
 {% elif entries %}
@@ -103,7 +173,8 @@
     </form>
 {% endif %}
 
-<a href="{{ url }}">{{ url_linktext }}</a>
+
 </div>
+
 </body>
 </html>

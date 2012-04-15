@@ -24,7 +24,7 @@ p#po{
 
 
 p#ne{
-    color: #bbff66;
+    color: #bbe900;
     font-family: Arial;
     font-size: 0.9em;
 }
@@ -43,7 +43,7 @@ div.data{
     width: 100%;
     background-image: url("/static/data_bgr.png");
     background-repeat:  no-repeat;
-    background-color: #7fcdbb        ;
+    background-color: #41b6c4        ;
     height:100%;
     text-align: center;
     line-height: 50%;
@@ -51,7 +51,18 @@ div.data{
 }
 div.bottom{
     background-color: #1d91c0    ;
+    background-image: url("/static/input_bgr.png");
 }
+div.bottom p{
+    text-align: center;
+}
+div.bottom input{
+    text-align: center;
+    font-size: 0.9em;
+    font-family: "oxygen";
+    width: 4em;
+}
+
 div#loginLink {
     text-align: right;
 }
