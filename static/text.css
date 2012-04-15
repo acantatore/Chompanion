@@ -1,14 +1,17 @@
+div.container_16{
+
+}
 
 div.header{
-    background-color: #1f211b;
-    color: #11bbff
+
+    color: #1f211b
 }
 
 div.ending{
-    background-color: #dd3322;
+
 }
 body{
-    background-color: #41b6c4    ;
+    background-color: #f7f3cb    ;
 }
 p.pos{
 color: #dd3322;
@@ -43,25 +46,55 @@ div.data{
     width: 100%;
     background-image: url("/static/data_bgr.png");
     background-repeat:  no-repeat;
-    background-color: #41b6c4        ;
+          ;
     height:100%;
     text-align: center;
     line-height: 50%;
 
 }
 div.bottom{
-    background-color: #1d91c0    ;
-    background-image: url("/static/input_bgr.png");
+
+    background-image: url("/static/date_bgr.png");
+    line-height: 20%;
 }
+
 div.bottom p{
     text-align: center;
+
+}
+
+div.bottom#alt{
+    background-image: url("/static/alt_bgr.png");
+}
+div.bottom#obj{
+    background-image: url("/static/obj_bgr.png");
+}
+div.bottom#pes{
+
+    background-image: url("/static/pes_bgr.png");
+}
+div.bottom#pes input:empty{
+    background-color: #f7e4b0;
+}
+div.bottom#dat{
+    background-image: url("/static/fec_bgr.png");
+}
+div.bottom#dat input:empty{
+    background-color: #f7e4b0;
+}
+div.bottom#bmi{
+    background-image: url("/static/bmi_bgr.png");
 }
 div.bottom input{
+    border: 1px solid #fff;
     text-align: center;
     font-size: 0.9em;
     font-family: "oxygen";
-    width: 4em;
+    width: 6em;
 }
+
+
+
 
 div#loginLink {
     text-align: right;

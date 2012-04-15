@@ -146,11 +146,15 @@
     <div class="grid_16 ending"></div>
     <div class="clear"></div>
     <form action="/log" method="post">
-        <div class="grid_4 bottom"><p><input value="{{ bio[0].height }}" name="height"></p></div>
-        <div class="grid_4 bottom"><p><input value="{{ bio[0].target }}" name="target"></p></div>
-        <div class="grid_4 bottom"><p><input value="" name="weight"></p></div>
-        <div class="grid_4 bottom"><p><input id="datepicker" type="text" name="date"></p></div>
-        <div class="grid_16 ending"><input type="submit" value="Log"></div>
+        <div class="grid_2 "><p></p></div>
+        <div class="grid_2 bottom" id="alt"><p ><input value="{{ bio[0].height }}" name="height"></p></div>
+        <div class="grid_2 bottom" id="obj"><p><input value="{{ bio[0].target }}" name="target"></p></div>
+        <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
+        <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
+        <div class="grid_2 bottom" id="bmi"><p><input value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
+        <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
+        <div class="grid_2 "><p></p></div>
+        <div class="grid_16 ending"></div>
     </form>
 {% elif entries %}
     {% for entry in entries %}
