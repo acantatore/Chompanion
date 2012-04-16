@@ -87,7 +87,7 @@ class Delete(webapp2.RequestHandler):
         except ValueError:
             self.redirect('/?' + urllib.urlencode({'log_name': "Anon"}))
 
-#TODO Formatear la fecha para que el input sea igual que el output
+
 
     def deleteRecord(self,request):
 

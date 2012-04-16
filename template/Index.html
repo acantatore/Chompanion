@@ -86,7 +86,7 @@
 
 <body>
 <div class="container_16">
-    <div class="grid_16 header"><h3>TITULO</h3></div>
+    <div class="grid_16 header"><h1>CHOMPanion</h1></div>
     <div class="clear"></div>
 {% if bio %}
     <div class="grid_16 header">
@@ -103,7 +103,7 @@
             {% for entry in entries %}
 
                 {% if loop.length > 7  %}
-                    {% if loop.index > 1 and loop.index < 9%}
+                    {% if loop.index >= loop.length - 6 and loop.index < loop.length +1%}
         <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
             {% if entry.weight > entries[loop.index-2].weight %}
             <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>

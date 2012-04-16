@@ -4,6 +4,7 @@ import datetime as dt
 import unittest
 from main import MainPage
 from main import Log
+from main import Delete
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.api import users
@@ -85,6 +86,9 @@ class modelTest(unittest.TestCase):
         self.modelTest()
 
 class mainTest(unittest.TestCase):
+
+
+
     def createTemplateTest(self):
         request = webapp2.Request.blank('/')
         cut = MainPage()
@@ -120,10 +124,23 @@ class mainTest(unittest.TestCase):
         #Bio=0 Entry=1
         cut.createLoggedTemplates(queryBio,queryLog,url,url_linktext)
 
+    def deleteRecordTest(self):
+        cut=Delete()
+        cut.deleteRecord(str(dt.date(2010,10,10)))
+
+    def deleteTest(self):
+        request = webapp2.Request.blank('/')
+        response = webapp2.Response()
+        handler = Log()
+        handler.initialize(request, response)
+        handler.post()
+
     def runTest(self):
         self.validateMainTest()
         self.createLoggedTemplatesTest()
         self.createTemplateTest()
+        self.deleteRecordTest()
+        self.deleteTest()
 
     def setUp(self):
     # First, create an instance of the Testbed class.
