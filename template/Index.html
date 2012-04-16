@@ -99,7 +99,7 @@
     <div class="grid_1"><p></p></div>
     {% if entries %}
         <!--<ul>-->
-    <form action="/delete" method="post">
+
             {% for entry in entries %}
 
                 {% if loop.length > 7  %}
@@ -110,8 +110,10 @@
             {% else %}
             <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
             {% endif %}
+            <form action="/delete" method="post">
             <input type="hidden" value="{{entry.date}}" name="delData">
             <input class="del_button" type="submit" value="" >
+            </form>
         </div>
                     {% endif %}
                 {% else %}
@@ -122,14 +124,18 @@
                         {% else %}
                         <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
                         {% endif %}
+                        <form action="/delete" method="post">
                     <input type="hidden" value="{{entry.date}}" name="delData">
                     <input class="del_button" type="submit" value="" >
+                            </form>
                     </div>
                     {% else %}
                     <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p><p style="font-size: 0.9em;">0.0</p>
-                    <input type="hidden" value="{{entry.date}}" name="delData">
+                        <form action="/delete" method="post">
+                        <input type="hidden" value="{{entry.date}}" name="delData">
                     <input class="del_button" type="submit" value="" >
                     </div>
+                    </form>
                     {% endif %}
 
                 {% endif %}
@@ -140,7 +146,7 @@
             {% endfor %}
         <!--</ul>-->
     {% endif %}
-    </form>
+
     <div class="grid_1"><p></p></div>
     <div class="clear"></div>
     <div class="grid_16 ending"></div>
