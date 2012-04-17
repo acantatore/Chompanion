@@ -42,30 +42,17 @@
         $(document).ready(function () {
 
             $.jqplot.config.enablePlugins = true;
-            s1 = [{ %
-            if entries %}
-            {%
-                for entry in entries %}
-                {%
-                    if loop.last %}
-                    ['{{ entry.date | escape }}', {{ entry.weight | escape
-                }
-            }
-            ]
-            {% else %
-            }
-            ['{{ entry.date | escape }}', {{ entry.weight | escape
-        }
-        }],
-        {%
-            endif %
-        }
-        {%
-            endfor %
-        }
-        {%
-            endif %
-        }
+            s1 = [
+                {% if entries %}
+            {% for entry in entries %}
+                {% if loop.last %}
+                    ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
+            {% else %}
+            ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
         ]
         plot1 = $.jqplot('chart1', [s1], {
             title:'Peso y Tendencia',
