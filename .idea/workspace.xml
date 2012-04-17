@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="915e5ee1-3484-459f-9f2b-a54298274a8b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/Index.html" afterPath="$PROJECT_DIR$/template/Index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/unittest_Chompanion.py" afterPath="$PROJECT_DIR$/test/unittest_Chompanion.py" />
     </list>
     <list id="d9c7c9b6-d86a-450b-a042-dcd8c9c26801" name="New changelist" comment="New changelist" />
     <ignored path="Chompanion.iws" />
@@ -18,7 +18,7 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Chompanion$Unit_Test.coverage" NAME="Unit Test Coverage Results" MODIFIED="1334262065456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Chompanion$Unit_Test.coverage" NAME="Unit Test Coverage Results" MODIFIED="1334687693474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -34,8 +34,10 @@
       <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="30" column="38" selection-start="513" selection-end="513" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#2#15#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -61,7 +63,7 @@
       <file leaf-file-name="Index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/template/Index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="0" selection-start="1465" selection-end="1465" vertical-scroll-proportion="1.7386364">
+            <state line="129" column="29" selection-start="5630" selection-end="5630" vertical-scroll-proportion="0.42196533">
               <folding />
             </state>
           </provider>
@@ -97,7 +99,7 @@
       <file leaf-file-name="unittest_Chompanion.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/unittest_Chompanion.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="32" selection-start="5583" selection-end="5583" vertical-scroll-proportion="0.0">
+            <state line="93" column="44" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -120,6 +122,9 @@
     <option name="UPDATE_CHANGES_POLICY" value="STASH" />
     <option name="LINE_SEPARATORS_CONVERSION" value="ASK" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/template/Index.html" root0="SKIP_INSPECTION" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
@@ -133,12 +138,12 @@
         <option value="$PROJECT_DIR$/libs/babel/dates.py" />
         <option value="$PROJECT_DIR$/libs/babel/support.py" />
         <option value="$PROJECT_DIR$/model.py" />
-        <option value="$PROJECT_DIR$/test/unittest_Chompanion.py" />
         <option value="$PROJECT_DIR$/grid.html" />
         <option value="$PROJECT_DIR$/static/text.css" />
         <option value="$PROJECT_DIR$/README" />
-        <option value="$PROJECT_DIR$/template/Index.html" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/test/unittest_Chompanion.py" />
+        <option value="$PROJECT_DIR$/template/Index.html" />
       </list>
     </option>
   </component>
@@ -174,6 +179,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -228,41 +234,8 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Chompanion" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Chompanion" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Chompanion" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Chompanion" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="plugins" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -279,16 +252,16 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="134" />
-    <property name="DefaultHtmlFileTemplate" value="Html" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="808" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="803" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="808" />
+    <property name="DefaultHtmlFileTemplate" value="Html" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="129" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="128" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -306,7 +279,7 @@
       <recent name="C:\Projects\Chompanion\libs" />
     </key>
   </component>
-  <component name="RunManager" selected="App Engine server.Build">
+  <component name="RunManager" selected="Python's test.Unit Test">
     <configuration default="true" type="Python.AppEngineServer" factoryName="App Engine server">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -488,24 +461,24 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="776" extended-state="6" />
+    <frame x="-8" y="-8" width="1296" height="776" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.47087377" sideWeight="0.49675325" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47087377" sideWeight="0.49675325" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.49675325" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26461038" sideWeight="0.5291262" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26948053" sideWeight="0.6618123" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.407767" sideWeight="0.48701298" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.66883117" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.32548702" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3381877" sideWeight="0.32548702" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.49675325" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32847896" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -573,7 +546,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>82</line>
+          <line>91</line>
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -611,9 +584,7 @@
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/lib/webapp2/webapp2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="576" column="63" selection-start="19710" selection-end="19710" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="576" column="63" selection-start="19710" selection-end="19710" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
@@ -621,44 +592,40 @@
         <state line="9" column="26" selection-start="276" selection-end="276" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/960_12_col.css">
+    <entry file="file://$PROJECT_DIR$/static/text.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="21" selection-start="298" selection-end="298" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="144" column="21" selection-start="3047" selection-end="3047" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="5" selection-start="18" selection-end="18" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="38" selection-start="513" selection-end="513" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#2#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/unittest_Chompanion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="164" column="32" selection-start="5583" selection-end="5583" vertical-scroll-proportion="0.0">
+        <state line="93" column="44" selection-start="3054" selection-end="3054" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/text.css">
+    <entry file="file://$PROJECT_DIR$/static/960_12_col.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="144" column="21" selection-start="3047" selection-end="3047" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="5" selection-start="18" selection-end="18" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="16" column="21" selection-start="298" selection-end="298" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/template/Index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="0" selection-start="1465" selection-end="1465" vertical-scroll-proportion="1.7386364">
+        <state line="129" column="29" selection-start="5630" selection-end="5630" vertical-scroll-proportion="0.42196533">
           <folding />
         </state>
       </provider>

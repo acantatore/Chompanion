@@ -12,8 +12,9 @@
     <!-- jQuery -->
     <script type="text/javascript" src="/static/jquery.min.js"></script>
     <!-- required plugins -->
-    <script type="text/javascript"  src="/static/date.js"></script>
-    <!--[if IE]><script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script><![endif]-->
+    <script type="text/javascript" src="/static/date.js"></script>
+    <!--[if IE]>
+    <script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script><![endif]-->
     <!-- jquery.datePicker.js -->
     <script type="text/javascript" src="/static/jquery.datePicker.js"></script>
     <!-- JqPlot -->
@@ -28,9 +29,9 @@
 
     <script type="text/javascript" src="/static/plugins/jqplot.trendline.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" hrf="/static/jquery.jqplot.min.css" />
+    <link rel="stylesheet" type="text/css" hrf="/static/jquery.jqplot.min.css"/>
     <script type="text/javascript" charset="utf-8">
-        $(function(){
+        $(function () {
             var pickerOpts = {
                 dateFormat:"dd/mm/yy"
             };
@@ -42,44 +43,60 @@
 
             $.jqplot.config.enablePlugins = true;
             s1 = [
-                {% if entries %}
-                    {% for entry in entries %}
-                        {% if loop.last %}
-                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
-                        {% else %}
-                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-
-            ]
-            plot1 = $.jqplot('chart1',[s1],{
-                title: 'Peso y Tendencia',
-                axes: {
-                    xaxis: {
-                        renderer: $.jqplot.DateAxisRenderer,
-                        tickOptions: {
-                            formatString: '%#d/%#m/%y'
-                        },
-                        numberTicks: 10
-                    },
-                    yaxis: {
-                        tickOptions: {
-                            formatString: '%.3P'
-                        }
-                    }
-                },
-                highlighter: {
-                    sizeAdjust: 10,
-                    tooltipLocation: 'n',
-                    tooltipAxes: 'y',
-                    useAxesFormatters: false
-                },
-                cursor: {
-                    show: false
+                { %
+            if entries %}
+            {%
+                for entry in entries %}
+                {%
+                    if loop.last %}
+                    ['{{ entry.date | escape }}', {{ entry.weight | escape
                 }
-            });
+            }
+            ]
+            {% else %
+            }
+            ['{{ entry.date | escape }}', {{ entry.weight | escape
+        }
+        }],
+        {%
+            endif %
+        }
+        {%
+            endfor %
+        }
+        {%
+            endif %
+        }
+
+        ]
+        plot1 = $.jqplot('chart1', [s1], {
+            title:'Peso y Tendencia',
+            axes:{
+                xaxis:{
+                    renderer:$.jqplot.DateAxisRenderer,
+                    tickOptions:{
+                        formatString:'%#d/%#m/%y'
+                    },
+                    numberTicks:10
+                },
+                yaxis:{
+                    tickOptions:{
+                        formatString:'%.3P'
+                    }
+                }
+            },
+            highlighter:{
+                sizeAdjust:10,
+                tooltipLocation:'n',
+                tooltipAxes:'y',
+                useAxesFormatters:false
+            },
+            cursor:{
+                show:false
+            }
         });
+        })
+        ;
     </script>
 
 </head>
@@ -88,83 +105,86 @@
 <div class="container_16">
     <div class="grid_16 header"><h1>CHOMPanion</h1></div>
     <div class="clear"></div>
-{% if bio %}
+    {% if bio %}
     <div class="grid_16 header">
         <div id="username"><p>{{ bio[0].user.nickname() }} | <a href="{{ url }}">{{ url_linktext }}</a></p>
-        <p>
-            <div id="chart1" style="height:300px;width:900px; "></div></p>
+
+            <p>
+
+            <div id="chart1" style="height:300px;width:900px; "></div>
+            </p>
         </div>
     </div>
     <div class="clear"></div>
     <div class="grid_1"><p></p></div>
     {% if entries %}
-        <!--<ul>-->
+    {% for entry in entries %}
+    {% if loop.length > 7 %}
+    {% if loop.index >= loop.length - 6 and loop.index < loop.length +1%}
+    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
 
-            {% for entry in entries %}
-
-                {% if loop.length > 7  %}
-                    {% if loop.index >= loop.length - 6 and loop.index < loop.length +1%}
-        <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
-            {% if entry.weight > entries[loop.index-2].weight %}
-            <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
-            {% else %}
-            <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
-            {% endif %}
-            <form action="/delete" method="post">
+        <p>{{ entry.date | escape }}</p>
+        {% if entry.weight > entries[loop.index-2].weight %}
+        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% else %}
+        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% endif %}
+        <form action="/delete" method="post">
             <input type="hidden" value="{{entry.date}}" name="delData">
-            <input class="del_button" type="submit" value="" >
-            </form>
-        </div>
-                    {% endif %}
-                {% else %}
-                    {% if loop.index > 1%}
-                    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p>
-                        {% if entry.weight > entries[loop.index-2].weight %}
-                        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
-                        {% else %}
-                        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
-                        {% endif %}
-                        <form action="/delete" method="post">
-                    <input type="hidden" value="{{entry.date}}" name="delData">
-                    <input class="del_button" type="submit" value="" >
-                            </form>
-                    </div>
-                    {% else %}
-                    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3><p>{{ entry.date | escape }}</p><p style="font-size: 0.9em;">0.0</p>
-                        <form action="/delete" method="post">
-                        <input type="hidden" value="{{entry.date}}" name="delData">
-                    <input class="del_button" type="submit" value="" >
-                    </div>
-                    </form>
-                    {% endif %}
-
-                {% endif %}
-
-
-
-
-            {% endfor %}
-        <!--</ul>-->
+            <input class="del_button" type="submit" value="">
+        </form>
+    </div>
     {% endif %}
+    {% else %}
+    {% if loop.index > 1%}
+    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
 
+        <p>{{ entry.date|datetime | escape }}</p>
+        {% if entry.weight > entries[loop.index-2].weight %}
+        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% else %}
+        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% endif %}
+        <form action="/delete" method="post">
+            <input type="hidden" value="{{entry.date}}" name="delData">
+            <input class="del_button" type="submit" value="">
+        </form>
+    </div>
+    {% else %}
+    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
+
+        <p>{{ entry.date|datetime | escape }}</p>
+
+        <p style="font-size: 0.9em;">0.0</p>
+
+        <form action="/delete" method="post">
+            <input type="hidden" value="{{entry.date}}" name="delData">
+            <input class="del_button" type="submit" value="">
+    </div>
+    </form>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
     <div class="grid_1"><p></p></div>
     <div class="clear"></div>
     <div class="grid_16 ending"></div>
     <div class="clear"></div>
     <form action="/log" method="post">
         <div class="grid_2 "><p></p></div>
-        <div class="grid_2 bottom" id="alt"><p ><input value="{{ bio[0].height }}" name="height"></p></div>
+        <div class="grid_2 bottom" id="alt"><p><input value="{{ bio[0].height }}" name="height"></p></div>
         <div class="grid_2 bottom" id="obj"><p><input value="{{ bio[0].target }}" name="target"></p></div>
         <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
         <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-        <div class="grid_2 bottom" id="bmi"><p><input value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
+        <div class="grid_2 bottom" id="bmi"><p><input
+                value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
         <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         <div class="grid_2 "><p></p></div>
         <div class="grid_16 ending"></div>
     </form>
-{% elif entries %}
+    {% elif entries %}
     {% for entry in entries %}
-        <div><p>{{ entry.weight | escape }}|{{ entry.date | escape }}</p></div>
+    <div><p>{{ entry.weight | escape }}|{{ entry.date | escape }}</p></div>
     {% endfor %}
     <form action="/log" method="post">
         <div class="inputs">Altura:<input value="" name="height"></div>
@@ -173,7 +193,7 @@
         <div class="inputs">Fecha:<input class="date-pick" value="" name="date"></div>
         <div><input type="submit" value="Log"></div>
     </form>
-{% else %}
+    {% else %}
     <form action="/log" method="post">
         <div class="inputs">Altura:<input value="" name="height"></div>
         <div class="inputs">Objetivo:<input value="" name="target"></div>
@@ -181,10 +201,7 @@
         <div class="inputs">Fecha:<input class="date-pick" value="" name="date"></div>
         <div><input type="submit" value="Log"></div>
     </form>
-{% endif %}
-
-
+    {% endif %}
 </div>
-
 </body>
 </html>

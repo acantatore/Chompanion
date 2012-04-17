@@ -30,6 +30,7 @@ class TestEntityGroupRoot(db.Model):
     """Entity group root"""
     pass
 
+
 class modelTest(unittest.TestCase):
     def setUp(self):
     # First, create an instance of the Testbed class.
@@ -40,13 +41,13 @@ class modelTest(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_user_stub()
-        self.setCurrentUser("adc@adc.com","aaaaaaa")
+        self.setCurrentUser("adc@adc.com", "aaaaaaa")
 
     def tearDown(self):
         self.logoutCurrentUser()
         self.testbed.deactivate()
 
-    def setCurrentUser(self,email, user_id, is_admin=False):
+    def setCurrentUser(self, email, user_id, is_admin=False):
         os.environ['SERVER_NAME'] = 'localhost'
         os.environ['SERVER_PORT'] = '8080'
         os.environ['AUTH_DOMAIN'] = 'example.org'
@@ -81,19 +82,15 @@ class modelTest(unittest.TestCase):
         assert expected == actual, 'ok'
 
     def runTest(self):
-
-
         self.modelTest()
 
+
 class mainTest(unittest.TestCase):
-
-
-
     def createTemplateTest(self):
         request = webapp2.Request.blank('/')
         cut = MainPage()
-        cut.createTemplate(users.get_current_user(),request.uri)
-        cut.createTemplate(None,request.uri)
+        cut.createTemplate(users.get_current_user(), request.uri)
+        cut.createTemplate(None, request.uri)
 
     def validateMainTest(self):
         request = webapp2.Request.blank('/')
@@ -113,20 +110,20 @@ class mainTest(unittest.TestCase):
         queryBio = TestModelBio.all().ancestor(root.key())
         queryLog = TestModelEntry.all().ancestor(root.key())
         #Bio=0 Entry=0
-        cut.createLoggedTemplates(queryBio,queryLog,url,url_linktext)
+        cut.createLoggedTemplates(queryBio, queryLog, url, url_linktext)
         TestModelBio(height=100, target=75.0, parent=root.key()).put()
         #Bio=1 Entry=0
-        cut.createLoggedTemplates(queryBio,queryLog,url,url_linktext)
+        cut.createLoggedTemplates(queryBio, queryLog, url, url_linktext)
         TestModelEntry(weight=100.1, parent=root.key()).put()
         #Bio=1 Entry=1
-        cut.createLoggedTemplates(queryBio,queryLog,url,url_linktext)
+        cut.createLoggedTemplates(queryBio, queryLog, url, url_linktext)
         db.delete(TestModelBio.all())
         #Bio=0 Entry=1
-        cut.createLoggedTemplates(queryBio,queryLog,url,url_linktext)
+        cut.createLoggedTemplates(queryBio, queryLog, url, url_linktext)
 
     def deleteRecordTest(self):
-        cut=Delete()
-        cut.deleteRecord(str(dt.date(2010,10,10)))
+        cut = Delete()
+        cut.deleteRecord(str(dt.date(2010, 10, 10)))
 
     def deleteTest(self):
         request = webapp2.Request.blank('/')
@@ -151,13 +148,13 @@ class mainTest(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_user_stub()
-        self.setCurrentUser("adc@adc.com","aaaaaaa")
+        self.setCurrentUser("adc@adc.com", "aaaaaaa")
 
     def tearDown(self):
         self.logoutCurrentUser()
         self.testbed.deactivate()
 
-    def setCurrentUser(self,email, user_id, is_admin=False):
+    def setCurrentUser(self, email, user_id, is_admin=False):
         os.environ['SERVER_NAME'] = 'localhost'
         os.environ['SERVER_PORT'] = '8080'
         os.environ['AUTH_DOMAIN'] = 'example.org'
@@ -168,8 +165,8 @@ class mainTest(unittest.TestCase):
     def logoutCurrentUser(self):
         self.setCurrentUser(None, None)
 
-class logTest(unittest.TestCase):
 
+class logTest(unittest.TestCase):
     def validateLogTest(self):
         request = webapp2.Request.blank('/')
         response = webapp2.Response()
@@ -181,7 +178,7 @@ class logTest(unittest.TestCase):
 
     def validateEntryValuesTest(self):
         cut = Log()
-        date = dt.date(2012,10,10).strftime("%d/%m/%Y")
+        date = dt.date(2012, 10, 10).strftime("%d/%m/%Y")
 
         mockUser = users.User("test@test", "gmail.com", "AAA")
         actual = cut.validateEntryValues(str(date), 100, mockUser.user_id())
@@ -202,15 +199,13 @@ class logTest(unittest.TestCase):
         assert expected == actual, 'error'
 
     def runTest(self):
-
         self.validateBioValuesTest()
         self.validateEntryValuesTest()
         self.validateLogTest()
 
 
-
     def setUp(self):
-# First, create an instance of the Testbed class.
+    # First, create an instance of the Testbed class.
         self.testbed = testbed.Testbed()
         # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
@@ -218,13 +213,13 @@ class logTest(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_user_stub()
-        self.setCurrentUser("adc@adc.com","aaaaaaa")
+        self.setCurrentUser("adc@adc.com", "aaaaaaa")
 
     def tearDown(self):
         self.logoutCurrentUser()
         self.testbed.deactivate()
 
-    def setCurrentUser(self,email, user_id, is_admin=False):
+    def setCurrentUser(self, email, user_id, is_admin=False):
         os.environ['SERVER_NAME'] = 'localhost'
         os.environ['SERVER_PORT'] = '8080'
         os.environ['AUTH_DOMAIN'] = 'example.org'

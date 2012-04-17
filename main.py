@@ -1,18 +1,13 @@
-
-
 import urllib
 import datetime as dt
+
 from operator import attrgetter
 import webapp2
 
 from model import Entry, log_key
 from model import Biometric, bio_key
 
-
-
 from google.appengine.api import users
-
-
 
 import jinja2
 import os
@@ -21,11 +16,17 @@ import os
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
+def format_datetime(value, format='short'):
+    if format == 'short':
+        format = "%d/%m/%Y"
+
+    return dt.datetime.strftime(value, format)
+
+jinja_environment.filters['datetime'] = format_datetime
+
 
 class MainPage(webapp2.RequestHandler):
-
-    def createLoggedTemplates(self,bio_query,log_query,url,url_linktext):
-
+    def createLoggedTemplates(self, bio_query, log_query, url, url_linktext):
         if bio_query.count(1) == 0 and log_query.count(1) == 0:
             template_values = {
                 'bio': None,
@@ -34,17 +35,16 @@ class MainPage(webapp2.RequestHandler):
                 'url_linktext': url_linktext,
                 }
         elif bio_query.count(1) > 0 and log_query.count(1) > 0:
-
             template_values = {
                 'bio': bio_query.fetch(1),
-                'entries': sorted(log_query.fetch(365),key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(365), key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
         elif bio_query.count(1) == 0 and log_query.count(1) > 0:
             template_values = {
                 'bio': None,
-                'entries': sorted(log_query.fetch(365),key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(365), key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
@@ -53,10 +53,10 @@ class MainPage(webapp2.RequestHandler):
                 'bio': bio_query.fetch(1),
                 'entries': None,
                 'url': url,
-                'url_linktext': url_linktext,}
+                'url_linktext': url_linktext, }
         return template_values
 
-    def createTemplate(self,currentUser,uri):
+    def createTemplate(self, currentUser, uri):
         if currentUser:
             url = users.create_logout_url(uri)
             url_linktext = 'Logout'
@@ -64,24 +64,23 @@ class MainPage(webapp2.RequestHandler):
             bio_query = Biometric.all().ancestor(bio_key(bio_name))
             log_query = Entry.all().ancestor(log_key(log_name)).order("-date")
             template = jinja_environment.get_template('/template/Index.html')
-            return template.render(self.createLoggedTemplates(bio_query,log_query,url,url_linktext))
+            return template.render(self.createLoggedTemplates(bio_query, log_query, url, url_linktext))
         else:
             url = users.create_login_url(uri)
             url_linktext = 'Login'
             template_values = {
                 'url': url,
                 'url_linktext': url_linktext,
-            }
+                }
             template = jinja_environment.get_template('/template/Login.html')
             return template.render(template_values)
 
     def get(self):
+        self.response.out.write(self.createTemplate(users.get_current_user(), self.request.uri))
 
-        self.response.out.write(self.createTemplate(users.get_current_user(),self.request.uri))
 
 class Delete(webapp2.RequestHandler):
     def post(self):
-
         try:
             userid = users.get_current_user().user_id()
             self.deleteRecord(self.request.get('delData'))
@@ -90,15 +89,14 @@ class Delete(webapp2.RequestHandler):
             self.redirect('/?' + urllib.urlencode({'log_name': "Anon"}))
 
 
-
-    def deleteRecord(self,request):
-
+    def deleteRecord(self, request):
         userid = users.get_current_user().user_id()
-        logDate=dt.datetime.strptime(request,"%Y-%m-%d").date()
+        logDate = dt.datetime.strptime(request, "%Y-%m-%d").date()
         logQuery = Entry.all().ancestor(log_key(userid)).filter('date =', logDate)
-        results=logQuery.fetch(1)
+        results = logQuery.fetch(1)
         for r in results:
             r.delete()
+
 
 class Log(webapp2.RequestHandler):
     def post(self):
@@ -124,11 +122,9 @@ class Log(webapp2.RequestHandler):
 
 
     def validateEntryValues(self, date, weight, userid):
-
         entry = Entry(parent=log_key(userid))
         if date and weight:
-
-            logDate = dt.datetime.strptime(date,"%d/%m/%Y").date()
+            logDate = dt.datetime.strptime(date, "%d/%m/%Y").date()
             logWeight = float(weight)
             logQuery = Entry.all().ancestor(log_key(userid)).filter('date =', logDate)
             if  self.checkEntry(logWeight, logQuery) < 1:
@@ -154,5 +150,5 @@ class Log(webapp2.RequestHandler):
         return query.count(1)
 
 
-app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log),('/delete',Delete)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log), ('/delete', Delete)], debug=True)
 
