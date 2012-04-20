@@ -63,6 +63,13 @@ class MainPage(webapp2.RequestHandler):
             log_name = bio_name = (users.get_current_user().user_id())
             bio_query = Biometric.all().ancestor(bio_key(bio_name))
             log_query = Entry.all().ancestor(log_key(log_name)).order("-date")
+            bio = Biometric(parent=bio_key(bio_name))
+            if bio_query.count(1)==0:
+                bio.user = users.get_current_user()
+                bio.height = 0
+                bio.target = 0.00
+                bio.put()
+
             template = jinja_environment.get_template('/template/Index.html')
             return template.render(self.createLoggedTemplates(bio_query, log_query, url, url_linktext))
         else:

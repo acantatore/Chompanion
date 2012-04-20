@@ -95,8 +95,11 @@
         <div id="username"><p>{{ bio[0].user.nickname() }} | <a href="{{ url }}">{{ url_linktext }}</a></p>
 
             <p>
-
+{% if entries %}
             <div id="chart1" style="height:300px;width:900px; "></div>
+    {% else %}
+    <div id="help1"></div>
+    {% endif %}
             </p>
         </div>
     </div>
@@ -105,14 +108,14 @@
     {% if entries %}
     {% for entry in entries %}
     {% if loop.length > 7 %}
-    {% if loop.index >= loop.length - 6 and loop.index < loop.length +1%}
+    {% if loop.index >= loop.length - 6 and loop.index < loop.length + 1%}
     <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
 
         <p>{{ entry.date|datetime | escape }}</p>
-        {% if entry.weight > entries[loop.index-2].weight %}
-        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% if entry.weight > entries[loop.index - 2].weight %}
+        <p class="pos" id="po">{{entry.weight - entries[loop.index - 2].weight}}</p>
         {% else %}
-        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+        <p class="neg" id="ne">{{entry.weight - entries[loop.index - 2].weight}}</p>
         {% endif %}
         <form action="/delete" method="post">
             <input type="hidden" value="{{entry.date}}" name="delData">
@@ -125,10 +128,10 @@
     <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
 
         <p>{{ entry.date|datetime | escape }}</p>
-        {% if entry.weight > entries[loop.index-2].weight %}
-        <p class="pos" id="po">{{entry.weight - entries[loop.index-2].weight}}</p>
+        {% if entry.weight > entries[loop.index - 2].weight %}
+        <p class="pos" id="po">{{entry.weight - entries[loop.index - 2].weight}}</p>
         {% else %}
-        <p class="neg" id="ne">{{entry.weight - entries[loop.index-2].weight}}</p>
+        <p class="neg" id="ne">{{entry.weight - entries[loop.index - 2].weight}}</p>
         {% endif %}
         <form action="/delete" method="post">
             <input type="hidden" value="{{entry.date}}" name="delData">
@@ -161,30 +164,14 @@
         <div class="grid_2 bottom" id="obj"><p><input value="{{ bio[0].target }}" name="target"></p></div>
         <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
         <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-        <div class="grid_2 bottom" id="bmi"><p><input
-                value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
+        {% if entries and bio[0].height > 0%}
+            <div class="grid_2 bottom" id="bmi"><p><input value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
+        {% else %}
+            <div class="grid_2 bottom" id="bmi"><p><input value="--" name="bmi"></p></div>
+        {% endif %}
         <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         <div class="grid_2 "><p></p></div>
         <div class="grid_16 ending"></div>
-    </form>
-    {% elif entries %}
-    {% for entry in entries %}
-    <div><p>{{ entry.weight | escape }}|{{ entry.date|datetime | escape }}</p></div>
-    {% endfor %}
-    <form action="/log" method="post">
-        <div class="inputs">Altura:<input value="" name="height"></div>
-        <div class="inputs">Objetivo:<input value="" name="target"></div>
-        <div class="inputs">Peso:<input value="" name="weight"></div>
-        <div class="inputs">Fecha:<input class="date-pick" value="" name="date"></div>
-        <div><input type="submit" value="Log"></div>
-    </form>
-    {% else %}
-    <form action="/log" method="post">
-        <div class="inputs">Altura:<input value="" name="height"></div>
-        <div class="inputs">Objetivo:<input value="" name="target"></div>
-        <div class="inputs">Peso:<input value="" name="weight"></div>
-        <div class="inputs">Fecha:<input class="date-pick" value="" name="date"></div>
-        <div><input type="submit" value="Log"></div>
     </form>
     {% endif %}
 </div>
