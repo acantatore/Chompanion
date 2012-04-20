@@ -88,11 +88,11 @@
 
 <body>
 <div class="container_16">
-    <div class="grid_16 header"><h1>CHOMPanion</h1></div>
+    <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a></div>
     <div class="clear"></div>
     {% if bio %}
     <div class="grid_16 header">
-        <div id="username"><p>{{ bio[0].user.nickname() }} | <a href="{{ url }}">{{ url_linktext }}</a></p>
+        <div id="username"><p>{{ bio[0].user.nickname() }} | </p>
 
             <p>
 {% if entries %}

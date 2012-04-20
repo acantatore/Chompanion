@@ -34,7 +34,7 @@ class MainPage(webapp2.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext,
                 }
-        elif bio_query.count(1) > 0 and log_query.count(1) > 0:
+        elif bio_query.count(1) and log_query.count(1) > 0:
             template_values = {
                 'bio': bio_query.fetch(1),
                 'entries': sorted(log_query.fetch(365), key=attrgetter('date')),
@@ -64,7 +64,7 @@ class MainPage(webapp2.RequestHandler):
             bio_query = Biometric.all().ancestor(bio_key(bio_name))
             log_query = Entry.all().ancestor(log_key(log_name)).order("-date")
             bio = Biometric(parent=bio_key(bio_name))
-            if bio_query.count(1)==0:
+            if not bio_query.count(1):
                 bio.user = users.get_current_user()
                 bio.height = 0
                 bio.target = 0.00
