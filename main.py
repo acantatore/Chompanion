@@ -91,6 +91,7 @@ class Delete(webapp2.RequestHandler):
         try:
             userid = users.get_current_user().user_id()
             self.deleteRecord(self.request.get('delData'))
+            self.updateBMI(userid)
             self.redirect('/?' + urllib.urlencode({'log_name': userid}))
         except ValueError:
             self.redirect('/?' + urllib.urlencode({'log_name': "Anon"}))
@@ -103,6 +104,21 @@ class Delete(webapp2.RequestHandler):
         results = logQuery.fetch(1)
         for r in results:
             r.delete()
+
+    def updateBMI(self,userid):
+        bioQuery = Biometric.all().ancestor(bio_key(userid)).filter('user =',users.get_current_user())
+        initQuery = Entry.all().ancestor(log_key(userid)).order('date')
+        if initQuery.count() > 0:
+            weight = initQuery[0].weight
+        if bioQuery.count() > 0:
+            height = bioQuery[0].height
+        if initQuery.count() and height and weight > 0:
+            for b in bioQuery:
+                b.bmi = float(weight) / (height/100.0)**2.0
+        else:
+            for b in bioQuery:
+                b.bmi = 0.00
+        b.put()
 
 
 class Log(webapp2.RequestHandler):
@@ -126,7 +142,7 @@ class Log(webapp2.RequestHandler):
             bio.height = height
             bio.target = target
             if weight and height > 0:
-                bio.bmi = float(weight) / height**2
+                bio.bmi = float(weight) / (height/100.0)**2.0
             else:
                 bio.bmi = 0.00
             bio.put()
@@ -169,7 +185,7 @@ class Log(webapp2.RequestHandler):
             if weight:
                 if weight:
                     if height > 0:
-                        q.bmi = float(weight) / height**2
+                        q.bmi = float(weight) / (height/100.0)**2.0
             else:
                 q.bmi = 0.00
             q.put()
