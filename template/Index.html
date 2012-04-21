@@ -99,7 +99,7 @@
                         <div class="grid_2 data">
                             <h3>{{ entry.weight | escape }}</h3>
                             <p>{{ entry.date|datetime | escape }}</p>
-                            {% if entry.variance > 0 %}
+                            {% if entry.variance < 0 %}
                                 <p class="pos" id="po">{{entry.variance}}</p>
                             {% else %}
                                 <p class="neg" id="ne">{{entry.variance}}</p>

@@ -105,9 +105,23 @@ class Delete(webapp2.RequestHandler):
         for r in results:
             r.delete()
 
+    def checkVariance(self,initQuery):
+        a=0
+        for i in initQuery:
+            if a == 0:
+                i.variance = 0.00
+                i.put()
+                a=a+1
+            else:
+                i.variance = initQuery[a-1].weight - i.weight
+                i.put()
+                a=a+1
+
     def updateBMI(self,userid):
         bioQuery = Biometric.all().ancestor(bio_key(userid)).filter('user =',users.get_current_user())
         initQuery = Entry.all().ancestor(log_key(userid)).order('date')
+        self.checkVariance(initQuery)
+        initQuery = Entry.all().ancestor(log_key(userid)).order('-date')
         if initQuery.count() > 0:
             weight = initQuery[0].weight
         if bioQuery.count() > 0:
