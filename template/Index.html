@@ -3,8 +3,6 @@
 <html>
 <head>
     <title>Chompanion</title>
-
-
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
     <link href="/static/960_16_col.css" rel='stylesheet' type='text/css'>
     <link href="/static/text.css" rel='stylesheet' type='text/css'>
@@ -18,18 +16,15 @@
     <!-- jquery.datePicker.js -->
     <script type="text/javascript" src="/static/jquery.datePicker.js"></script>
     <!-- JqPlot -->
-
-
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.barRenderer.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.categoryAxisRenderer.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.cursor.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.highlighter.min.js"></script>
-
     <script type="text/javascript" src="/static/plugins/jqplot.trendline.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" hrf="/static/jquery.jqplot.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css"/>
     <script type="text/javascript" charset="utf-8">
         $(function () {
             var pickerOpts = {
@@ -44,16 +39,14 @@
             $.jqplot.config.enablePlugins = true;
             s1 = [
                 {% if entries %}
-            {% for entry in entries %}
-                {% if loop.last %}
-                    ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
-            {% else %}
-            ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-
-        ]
+                    {% for entry in entries %}
+                        {% if loop.last %}
+                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
+                        {% else %}
+                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
+                        {% endif %}
+                    {% endfor %}
+                {% endif %} ]
         plot1 = $.jqplot('chart1', [s1], {
             title:'Peso y Tendencia',
             axes:{
@@ -83,77 +76,41 @@
         })
         ;
     </script>
-
 </head>
-
 <body>
 <div class="container_16">
     <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a></div>
     <div class="clear"></div>
     {% if bio %}
-    <div class="grid_16 header">
-        <div id="username"><p>{{ bio[0].user.nickname() }} | </p>
-
-            <p>
-{% if entries %}
-            <div id="chart1" style="height:300px;width:900px; "></div>
-    {% else %}
-    <div id="help1"></div>
-    {% endif %}
-            </p>
+        <div class="grid_16 header">
+            <div id="username"><p>{{ bio[0].user.nickname() }} | </p>
+            {% if entries %}
+                <p><div id="chart1" style="height:300px;width:900px; "></div></p>
+            {% else %}
+                <p><div id="help1">??</div></p>
+            {% endif %}
+            
         </div>
     </div>
     <div class="clear"></div>
     <div class="grid_1"><p></p></div>
-    {% if entries %}
-    {% for entry in entries %}
-    {% if loop.length > 7 %}
-    {% if loop.index >= loop.length - 6 and loop.index < loop.length + 1%}
-    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
-
-        <p>{{ entry.date|datetime | escape }}</p>
-        {% if entry.weight > entries[loop.index - 2].weight %}
-        <p class="pos" id="po">{{entry.weight - entries[loop.index - 2].weight}}</p>
-        {% else %}
-        <p class="neg" id="ne">{{entry.weight - entries[loop.index - 2].weight}}</p>
+        {% if entries %}
+            {% for entry in entries %}
+                        <div class="grid_2 data">
+                            <h3>{{ entry.weight | escape }}</h3>
+                            <p>{{ entry.date|datetime | escape }}</p>
+                            {% if entry.variance > 0 %}
+                                <p class="pos" id="po">{{entry.variance}}</p>
+                            {% else %}
+                                <p class="neg" id="ne">{{entry.variance}}</p>
+                            {% endif %}
+                             <form action="/delete" method="post">
+                                <input type="hidden" value="{{entry.date}}" name="delData">
+                                <input class="del_button" type="submit" value="">
+                             </form>
+                        </div>
+            {% endfor %}
         {% endif %}
-        <form action="/delete" method="post">
-            <input type="hidden" value="{{entry.date}}" name="delData">
-            <input class="del_button" type="submit" value="">
-        </form>
-    </div>
-    {% endif %}
-    {% else %}
-    {% if loop.index > 1%}
-    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
-
-        <p>{{ entry.date|datetime | escape }}</p>
-        {% if entry.weight > entries[loop.index - 2].weight %}
-        <p class="pos" id="po">{{entry.weight - entries[loop.index - 2].weight}}</p>
-        {% else %}
-        <p class="neg" id="ne">{{entry.weight - entries[loop.index - 2].weight}}</p>
-        {% endif %}
-        <form action="/delete" method="post">
-            <input type="hidden" value="{{entry.date}}" name="delData">
-            <input class="del_button" type="submit" value="">
-        </form>
-    </div>
-    {% else %}
-    <div class="grid_2 data"><h3>{{ entry.weight | escape }}</h3>
-
-        <p>{{ entry.date|datetime | escape }}</p>
-
-        <p style="font-size: 0.9em;">0.0</p>
-
-        <form action="/delete" method="post">
-            <input type="hidden" value="{{entry.date}}" name="delData">
-            <input class="del_button" type="submit" value="">
-        </form>
-    </div>
-    {% endif %}
-    {% endif %}
-    {% endfor %}
-    {% endif %}
     <div class="grid_1"><p></p></div>
     <div class="clear"></div>
     <div class="grid_16 ending"></div>
@@ -164,11 +121,7 @@
         <div class="grid_2 bottom" id="obj"><p><input value="{{ bio[0].target }}" name="target"></p></div>
         <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
         <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-        {% if entries and bio[0].height > 0%}
-            <div class="grid_2 bottom" id="bmi"><p><input value="{{ entries[0].weight / ((bio[0].height/100)*(bio[0].height/100))}}" name="bmi"></p></div>
-        {% else %}
-            <div class="grid_2 bottom" id="bmi"><p><input value="--" name="bmi"></p></div>
-        {% endif %}
+        <div class="grid_2 bottom" id="bmi"><p><input value="{{bio[0].bmi}}" name="bmi"></p></div>
         <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         <div class="grid_2 "><p></p></div>
         <div class="grid_16 ending"></div>

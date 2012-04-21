@@ -14,4 +14,9 @@ indexes:
   ancestor: yes
   properties:
   - name: date
+
+- kind: Entry
+  ancestor: yes
+  properties:
+  - name: date
     direction: desc

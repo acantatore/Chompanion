@@ -37,14 +37,14 @@ class MainPage(webapp2.RequestHandler):
         elif bio_query.count(1) and log_query.count(1) > 0:
             template_values = {
                 'bio': bio_query.fetch(1),
-                'entries': sorted(log_query.fetch(365), key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(7), key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
         elif bio_query.count(1) == 0 and log_query.count(1) > 0:
             template_values = {
                 'bio': None,
-                'entries': sorted(log_query.fetch(365), key=attrgetter('date')),
+                'entries': sorted(log_query.fetch(7), key=attrgetter('date')),
                 'url': url,
                 'url_linktext': url_linktext,
                 }
@@ -109,20 +109,26 @@ class Log(webapp2.RequestHandler):
     def post(self):
         try:
             userid = users.get_current_user().user_id()
+            weight = self.request.get('weight')
             self.validateEntryValues(self.request.get('date'), self.request.get('weight'), userid)
-            self.validateBioValues(int(self.request.get('height')), float(self.request.get('target')), userid)
+            self.validateBioValues(int(self.request.get('height')), float(self.request.get('target')),weight, userid)
             self.redirect('/?' + urllib.urlencode({'log_name': userid}))
         except ValueError:
             self.redirect('/?' + urllib.urlencode({'log_name': 'Anon'}))
 
 
-    def validateBioValues(self, height, target, userid):
+
+    def validateBioValues(self, height, target,weight, userid):
         bio = Biometric(parent=bio_key(userid))
         bioQuery = Biometric.all().ancestor(bio_key(userid))
-        if  self.checkBio(height, target, bioQuery) < 1:
+        if  self.checkBio(height, target,weight, bioQuery) < 1:
             bio.user = users.get_current_user()
             bio.height = height
             bio.target = target
+            if weight and height > 0:
+                bio.bmi = float(weight) / height**2
+            else:
+                bio.bmi = 0.00
             bio.put()
             return True
         return False
@@ -134,19 +140,38 @@ class Log(webapp2.RequestHandler):
             logDate = dt.datetime.strptime(date, "%d/%m/%Y").date()
             logWeight = float(weight)
             logQuery = Entry.all().ancestor(log_key(userid)).filter('date =', logDate)
+            initQuery = Entry.all().ancestor(log_key(userid)).order('date')
             if  self.checkEntry(logWeight, logQuery) < 1:
                 entry.user = users.get_current_user()
                 entry.weight = logWeight
                 entry.date = logDate
                 entry.put()
+                self.checkVariance(initQuery)
             return True
         else:
             return False
 
-    def checkBio(self, height, target, query):
+    def checkVariance(self,initQuery):
+        a=0
+        for i in initQuery:
+            if a == 0:
+                i.variance = 0.00
+                a=a+1
+            else:
+                i.variance = initQuery[a-1].weight - i.weight
+                i.put()
+                a=a+1
+
+    def checkBio(self, height, target,weight, query):
         for q in query:
             q.height = height
             q.target = target
+            if weight:
+                if weight:
+                    if height > 0:
+                        q.bmi = float(weight) / height**2
+            else:
+                q.bmi = 0.00
             q.put()
         return query.count(1)
 
@@ -154,6 +179,7 @@ class Log(webapp2.RequestHandler):
         for q in query:
             q.weight = weight
             q.put()
+            self.checkVariance(query)
         return query.count(1)
 
 
