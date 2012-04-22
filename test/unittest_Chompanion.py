@@ -2,6 +2,7 @@ __author__ = 'alejandro.cantatore'
 import os
 import datetime as dt
 import unittest
+from main import format_datetime
 from main import MainPage
 from main import Log
 from main import Delete
@@ -62,7 +63,7 @@ class modelTest(unittest.TestCase):
         cut = Log()
         root = TestEntityGroupRoot(key_name="root")
         queryEmpty = TestModelBio.all().ancestor(root.key())
-        actual = cut.checkBio(100, 100.0, queryEmpty)
+        actual = cut.checkBio(100, 100.0,90.0, queryEmpty)
         expected = 0
         assert expected == actual, 'ErrorBio'
         queryEmpty = TestModelEntry.all().ancestor(root.key())
@@ -70,9 +71,9 @@ class modelTest(unittest.TestCase):
         expected = 0
         assert expected == actual, 'ErrorEntry'
 
-        TestModelBio(height=100, target=75.0, parent=root.key()).put()
+        TestModelBio(height=100, target=75.0,weight=75, parent=root.key()).put()
         queryFull = TestModelBio.all().ancestor(root.key())
-        actual = cut.checkBio(100, 100.0, queryFull)
+        actual = cut.checkBio(100, 100.0,75.0, queryFull)
         expected = 1
         assert expected == actual, 'ok'
         TestModelEntry(weight=100.1, parent=root.key()).put()
@@ -191,18 +192,41 @@ class logTest(unittest.TestCase):
     def validateBioValuesTest(self):
         cut = Log()
         mockUser = users.User("test@test", "gmail.com", "AAA")
-        actual = cut.validateBioValues(100, 100.1, mockUser.user_id())
+        actual = cut.validateBioValues(100, 100.1,75.0, mockUser.user_id())
         expected = True
         assert expected == actual, 'ok'
-        actual = cut.validateBioValues(100, None, mockUser.user_id())
+        actual = cut.validateBioValues(100, None,None, mockUser.user_id())
         expected = False
         assert expected == actual, 'error'
+
+    def format_datetimeTest(self):
+        format_datetime(dt.datetime.now(),'short')
+
+    def deleteTest(self):
+        delete = Delete()
+        root = TestEntityGroupRoot(key_name="root")
+        queryLog = TestModelEntry.all().ancestor(root.key())
+        delete.checkVariance(queryLog)
+    def updateBMITest(self):
+        delete = Delete()
+        userid = users.get_current_user().user_id()
+        delete.updateBMI(userid)
+
+    def postDelteTest(self):
+        request = webapp2.Request.blank('/')
+        response = webapp2.Response()
+        handler = Delete()
+        handler.initialize(request, response)
+        handler.post()
 
     def runTest(self):
         self.validateBioValuesTest()
         self.validateEntryValuesTest()
         self.validateLogTest()
-
+        self.format_datetimeTest()
+        self.deleteTest()
+        self.updateBMITest()
+        self.postDelteTest()
 
     def setUp(self):
     # First, create an instance of the Testbed class.
