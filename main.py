@@ -67,11 +67,15 @@ class MainPage(webapp2.RequestHandler):
         firstday=first_entry[0].date
         lastday=last_entry[0].date
         lastweight=last_entry[0].weight
-        targetweight=bio_query[0].weight
+        targetweight=bio_query[0].target
         variance=last_entry[0].variance
-        tw=(lastweight-targetweight)*((lastday-firstday).days)/variance
-        td=lastday+dt.timedelta(tw)
-        target = (tw,td)
+        if lastweight and targetweight and variance > 0:
+            tw=(lastweight-targetweight)*((lastday-firstday).days)/variance
+            td=lastday+dt.timedelta(tw)
+            target = (tw,td)
+        else:
+            target = None
+
         return target
 
     def createTemplate(self, currentUser, uri):

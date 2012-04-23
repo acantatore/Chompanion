@@ -44,11 +44,24 @@ div.data h3{
     color: #1f211b;
     font-family: "Oleo Script"
 }
+div#placeholdernd{
+height:300px;
+width:900px;
+background-image: url("/static/PlaceholderND.jpg");
+background-repeat:  no-repeat;
+}
+
+div#placeholderst{
+height:300px;
+width:900px;
+background-image: url("/static/PlaceholderST.jpg");
+background-repeat:  no-repeat;
+}
+
 div.data{
     width: 100%;
     background-image: url("/static/data_bgr.png");
     background-repeat:  no-repeat;
-          ;
     height:100%;
     text-align: center;
     line-height: 50%;

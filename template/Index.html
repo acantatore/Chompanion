@@ -33,6 +33,11 @@
             $("#datepicker").datepicker(pickerOpts);
         });
     </script>
+	<script type="text/javascript" charset="utf-8">
+	$(function() {
+		$( "#tabs" ).tabs();
+	});
+	</script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
 
@@ -82,12 +87,20 @@
     <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a></div>
     <div class="clear"></div>
     {% if bio %}
-        <div class="grid_16 header">
+        <div id="tabs" class="grid_16 header">
+			
             <div id="username"><p>{{ bio[0].user.nickname() }} | </p>
+			<ul>
+				<li><a href="#chart1">Grafico</a></li>
+				<li><a href="#tabs-2">Estadisticas</a></li>
+			</ul>
             {% if entries %}
                 <p><div id="chart1" style="height:300px;width:900px; "></div></p>
+				<p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
             {% else %}
-                <p><div id="help1">??</div></p>
+                <p><div id="chart1"><img src="/static/PlaceholderND.jpg" width="900" height="300"></div></p>
+				<p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
+				
             {% endif %}
             
         </div>
