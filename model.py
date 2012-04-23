@@ -28,3 +28,4 @@ class Biometric(db.Model):
 def bio_key(bio_name=None):
     """Height, target & BMI rating per user"""
     return db.Key.from_path('bio', bio_name)
+

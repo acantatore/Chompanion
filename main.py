@@ -1,5 +1,6 @@
 import urllib
 import datetime as dt
+from datetime import timedelta
 
 from operator import attrgetter
 import webapp2
@@ -36,6 +37,7 @@ class MainPage(webapp2.RequestHandler):
                 }
         elif bio_query.count(1) and log_query.count(1) > 0:
             template_values = {
+                'target': self.targetStatistics(),
                 'bio': bio_query.fetch(1),
                 'entries': sorted(log_query.fetch(7), key=attrgetter('date')),
                 'url': url,
@@ -55,6 +57,22 @@ class MainPage(webapp2.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext, }
         return template_values
+
+    def targetStatistics(self):
+        log_name = bio_name = (users.get_current_user().user_id())
+        bio_query = Biometric.all().ancestor(bio_key(bio_name)).fetch(1)
+        first_entry = Entry.all().ancestor(log_key(log_name)).order("date").fetch(1)
+        last_entry = Entry.all().ancestor(log_key(log_name)).order("-date").fetch(1)
+
+        firstday=first_entry[0].date
+        lastday=last_entry[0].date
+        lastweight=last_entry[0].weight
+        targetweight=bio_query[0].weight
+        variance=last_entry[0].variance
+        tw=(lastweight-targetweight)*((lastday-firstday).days)/variance
+        td=lastday+dt.timedelta(tw)
+        target = (tw,td)
+        return target
 
     def createTemplate(self, currentUser, uri):
         if currentUser:
@@ -95,7 +113,6 @@ class Delete(webapp2.RequestHandler):
             self.redirect('/?' + urllib.urlencode({'log_name': userid}))
         except ValueError:
             self.redirect('/?' + urllib.urlencode({'log_name': "Anon"}))
-
 
     def deleteRecord(self, request):
         userid = users.get_current_user().user_id()

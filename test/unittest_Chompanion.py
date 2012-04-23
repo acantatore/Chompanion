@@ -219,6 +219,10 @@ class logTest(unittest.TestCase):
         handler.initialize(request, response)
         handler.post()
 
+    def targetStatisticsTest(self):
+        main = MainPage()
+        main.targetStatistics()
+
     def runTest(self):
         self.validateBioValuesTest()
         self.validateEntryValuesTest()
@@ -227,6 +231,7 @@ class logTest(unittest.TestCase):
         self.deleteTest()
         self.updateBMITest()
         self.postDelteTest()
+        self.targetStatisticsTest()
 
     def setUp(self):
     # First, create an instance of the Testbed class.
