@@ -2,7 +2,11 @@ __author__ = 'alejandro.cantatore'
 
 from google.appengine.ext import db
 from datetime import datetime
-class Entry(db.Model):
+class DictModel(db.Model):
+    def to_dict(self):
+        return dict([(p, unicode(getattr(self, p))) for p in self.properties()])
+
+class Entry(DictModel):
     #TODO: Implementar Variancia
     """Weight Table with Variance"""
     user = db.UserProperty()
@@ -18,7 +22,7 @@ def log_key(log_name=None):
     return db.Key.from_path('log', log_name)
 
 #TODO: Implementar Objetivos
-class Biometric(db.Model):
+class Biometric(DictModel):
     user = db.UserProperty()
     height = db.IntegerProperty(default=0)
     target = db.FloatProperty(default=0.00)

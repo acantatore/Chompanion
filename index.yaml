@@ -20,3 +20,8 @@ indexes:
   properties:
   - name: date
     direction: desc
+
+- kind: Entry
+  ancestor: yes
+  properties:
+  - name: weight

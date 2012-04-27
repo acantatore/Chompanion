@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Log</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript">
+        $("document").ready(function() {
+            $.getJSON("http://localhost:8080/users/{{ nick }}/", function(data) {
+
+
+
+                $.each(data, function(i, item) {
+                    $("#div-my-table").append("<p>" + item.height +"</p><p>" + item.bmi + "</p>");
+                });
+
+
+
+            });
+        });
+    </script>
+
+</head>
+<body>
+<div><p><a href="{{ url }}">{{ url_linktext }}</a></p></div>
+<div><p><a href="/users/{{ nick }}/">usuario</a></p></div>
+<div>
+    <div id="div-my-table"></div>
+<form action="/users/{{ nick }}/" method="POST">
+    <input value="169" name="height">
+    <input value="80" name="weight">
+    <input value="75" name="target">
+    <input type="submit" value="Log">
+</form>
+<form action="/users/{{ nick }}/entry/"  id="entryForm">
+        <input value="2010-10-10" name="date">
+        <input value="80.1" name="weight">
+        <input value="7.5" name="variance">
+        <input type="submit" value="Entry">
+</form>
+</div>
+<!-- the result of the search will be rendered inside this div -->
+<div id="result"></div>
+
+<script>
+    /* attach a submit handler to the form */
+    $("#entryForm").submit(function(event) {
+
+        /* stop form from submitting normally */
+        event.preventDefault();
+
+        /* get some values from elements on the page: */
+        var $form = $( this ),
+                date = $form.find( 'input[name="date"]' ).val(),
+                weight = $form.find( 'input[name="weight"]' ).val(),
+                variance = $form.find( 'input[name="variance"]' ).val(),
+                url = $form.attr( 'action' );
+
+        /* Send the data using post and put the results in a div */
+        $.post( url+date,
+                { date: date, weight:weight, variance:variance }
+
+        );
+    });
+</script>
+</body>
+</html>

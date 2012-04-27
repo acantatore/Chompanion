@@ -1,8 +1,10 @@
 import urllib
 import datetime as dt
 from datetime import timedelta
-
 from operator import attrgetter
+from webapp2_extras import routes
+from webapp2_extras import json
+
 import webapp2
 
 from model import Entry, log_key
@@ -16,7 +18,7 @@ import os
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
+'''
 def format_datetime(value, format='short'):
     if format == 'short':
         format = "%d/%m/%Y"
@@ -103,7 +105,7 @@ class MainPage(webapp2.RequestHandler):
                 }
             template = jinja_environment.get_template('/template/Login.html')
             return template.render(template_values)
-
+#Entrada Principal
     def get(self):
         self.response.out.write(self.createTemplate(users.get_current_user(), self.request.uri))
 
@@ -232,7 +234,252 @@ class Log(webapp2.RequestHandler):
             q.put()
             self.checkVariance(query)
         return query.count(1)
+'''
+################################################################################################
+#app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log), ('/delete', Delete)], debug=True)
+class QueryHandler():
+    def bioquery(self,bio_name):
+        return  Biometric.all().ancestor(bio_key(bio_name))
+
+    def bioadd(self,bio_name):
+        return  Biometric(parent=bio_key(bio_name))
+
+    def entryquery_dt_d(self,log_name):
+        return  Entry.all().ancestor(log_key(log_name)).order("-date")
+
+    def entryRsetBuilder(self,log_name):
+        rset = Entry.all()
+        rset.ancestor(log_key(log_name))
+        return rset
+
+    def entryquery_fd(self,log_name,logDate):
+        dc = DateCheck()
+        date=dc.parseCurrentDate(logDate)
+        rset = self.entryRsetBuilder(log_name)
+        rset.filter('date =',date)
+        return  rset
+
+    def entryquery_f_sded(self,log_name,sd,ed):
+        dc = DateCheck()
+        startdate=dc.parseCurrentDate(sd)
+        enddate=dc.parseCurrentDate(ed)
+        rset = self.entryRsetBuilder(log_name)
+        rset.filter('date >=',startdate)
+        rset.filter('date <=',enddate)
+        return  rset
+
+    def entryadd(self,log_name):
+        return Entry(parent=log_key(log_name))
+
+class DateCheck():
+    def parseCurrentDate(self,date):
+        if date:
+            y = date[0:4]
+            m = date[5:7]
+            d = date[8:10]
+            return dt.date(int(y),int(m),int(d))
+        return None
+
+class AuthCheck():
+    def checkUser(self,user):
+        if user == users.get_current_user().nickname():
+            return True
+        return False
+
+class RootHandler(webapp2.RequestHandler):
+    """ This is the entry point class for Chompanion, handles the template construction
+        get()
+    """
+    def get(self):
+        """ This is the entry point method for Chompanion. The path is "/"
+        """
+        self.response.out.write(self.createTemplate(users.get_current_user(), self.request.uri))
+
+    def createTemplate(self, currentUser, uri):
+        if currentUser:
+            userid=users.get_current_user().user_id()
+            template = jinja_environment.get_template('/template/Log.html')
+            return template.render(self.buildTemplate(userid,uri))
+        else:
+            url = users.create_login_url(uri)
+            url_linktext = 'Login'
+            template_values = {
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+            template = jinja_environment.get_template('/template/Demo.html')
+            return template.render(template_values)
+
+    def buildTemplate(self,userId,uri):
+        q = QueryHandler()
+        bq = q.bioquery(userId)
+        eq = q.entryquery_dt_d(userId)
+        url = users.create_logout_url(uri)
+        url_linktext = 'Logout'
+        nick = users.get_current_user().nickname()
+        if bq.count(1) == 0 and eq.count(1) == 0:
+            template_values = {
+                'uid':userId,
+                'nick': nick,
+                'bio': None,
+                'entries': None,
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        elif bq.count(1) and eq.count(1) > 0:
+            template_values = {
+                'uid':userId,
+                'target': None,#self.targetStatistics(),
+                'bio': bq.fetch(1),
+                'entries': sorted(eq.fetch(7), key=attrgetter('date')),
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        elif bq.count(1) == 0 and eq.count(1) > 0:
+            template_values = {
+                'uid':userId,
+                'bio': None,
+                'entries': sorted(eq.fetch(7), key=attrgetter('date')),
+                'url': url,
+                'url_linktext': url_linktext,
+                }
+        else:
+            template_values = {
+                'uid':userId,
+                'nick':nick,
+                #'date': currDate,
+                'bio': bq.fetch(1),
+                'entries': None,
+                'url': url,
+                'url_linktext': url_linktext, }
+        return template_values
+
+class UserOverviewHandler(webapp2.RequestHandler):
+    """ This handles the main screen and User Bio Data updates
+        get()
+        put()
+        post()
+    """
+    def get(self,user):
+        """ Reads the User Data. The path is "/users/{nickname}"
+        """
+        if user:
+            q = QueryHandler()
+            bq = q.bioquery(users.get_current_user().user_id())
+            if bq.count(1) != 0:
+                #JSON
+                self.response.write(json.encode([b.to_dict() for b in bq]))
 
 
-app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log), ('/delete', Delete)], debug=True)
+    def post(self,user):
+        if user:
+            height =int(self.request.get('height'))
+            target =float(self.request.get('target'))
+            weight =float(self.request.get('weight'))
+            userid = users.get_current_user().user_id()
+            q = QueryHandler()
+            ba= q.bioadd(userid)
+            bq= q.bioquery(userid)
+            if bq.count(1) == 0:
+                self.createUserBiometrics(ba,height,target,None)
+            else:
+                self.validateUserBiometrics(bq,height,target,weight)
+
+            self.redirect('/')
+
+    def createUserBiometrics(self,ba,height,target,weight):
+            self.loadBiometrics(ba,height,target,weight)
+
+    def validateUserBiometrics(self,bq,height,target,weight):
+        for b in bq:
+            self.loadBiometrics(b,height,target,weight)
+
+    def loadBiometrics(self,b,height,target,weight):
+        b.user = users.get_current_user()
+        b.height = height
+        b.target = target
+        if weight and height > 0:
+            b.bmi = float(weight) / (height/100.0)**2.0
+        else:
+            b.bmi = 0.00
+        b.put()
+
+class EntryHandler(webapp2.RequestHandler):
+
+
+    def get(self,user,cd):
+        ac = AuthCheck()
+
+        if user:
+            if ac.checkUser(user):
+                q = QueryHandler()
+
+                eq = q.entryquery_fd(users.get_current_user().user_id(),cd)
+                if eq.count(1) != 0:
+                    #JSON
+                    self.response.write(json.encode([b.to_dict() for b in eq]))
+
+    def post(self,user,cd):
+        ac = AuthCheck()
+        dc = DateCheck()
+        date = dc.parseCurrentDate(cd)
+        if user and date:
+
+            if ac.checkUser(user):
+                weight =float(self.request.get('weight'))
+                variance =float(self.request.get('variance'))
+                userid = users.get_current_user().user_id()
+                q = QueryHandler()
+                ea= q.entryadd(userid)
+                eq= q.entryquery_fd(userid,cd)
+                if eq.count(1) == 0:
+                    self.createUserEntry(ea,weight,variance,date)
+                else:
+                    self.validateUserEntry(eq,weight,variance,date)
+
+    def createUserEntry(self,ea,weight,variance,date):
+        self.loadEntry(ea,weight,variance,date)
+
+    def validateUserEntry(self,eq,weight,variance,date):
+
+        for e in eq:
+            self.loadEntry(e,weight,variance,date)
+
+    def loadEntry(self,e,weight,variance,date):
+        e.user = users.get_current_user()
+        e.weight = weight
+        e.variance = variance
+        e.date = date
+        e.put()
+
+class EntryListHandler(webapp2.RequestHandler):
+    def get(self,user,sd,ed):
+        ac = AuthCheck()
+        if user:
+            if ac.checkUser(user):
+                q = QueryHandler()
+                #Esta query trae la ULTIMA y yo quiero una Query que traiga con filtro.
+                eq = q.entryquery_f_sded(users.get_current_user().user_id(),sd,ed)
+                if eq.count(1) != 0:
+                    #JSON
+                    self.response.write(json.encode([b.to_dict() for b in eq]))
+
+class DetailHandler(webapp2.RequestHandler):
+    def get(self,user,date):
+        print('DetailHandler')
+
+
+
+app = webapp2.WSGIApplication([
+    webapp2.Route('/', RootHandler, 'index'),
+    routes.PathPrefixRoute('/users/<user:.+>',[
+        webapp2.Route('/', UserOverviewHandler, 'user-overview'),
+        webapp2.Route('/entry-list/<sd:.+>,<ed:.+>', EntryListHandler, 'entry-list'),
+#        webapp2.Route('/entry/<cd:^(19[0-9]{2}|2[0-9]{3})(0[1-9]|1[012])([123]0|[012][1-9]|31)>', EntryHandler, 'entry'),
+        webapp2.Route('/entry/<cd:.+>', EntryHandler, 'entry'),
+        webapp2.Route('/entry/<date:(\d{4})-(\d{2})-(\d{2})>/detail', DetailHandler, 'detail'),
+        ]),
+     ])
+
+
 
