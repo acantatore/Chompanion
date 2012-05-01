@@ -134,14 +134,14 @@ class MainTest(unittest.TestCase):
         handler.get(user=None,cd=None)
         self.setCurrentUser("adc@adc.com", "aaaaaaa")
         userId=users.get_current_user().user_id()
-        handler.get(user=nick,cd='20121010')
+        handler.get(user=nick,cd='2012-10-10')
         Entry(weight=100.0, variance=5.0,date=currDate,user=currUser, parent=log_key(userId)).put()
-        handler.get(user=nick,cd='20121010')
+        handler.get(user=nick,cd='2012-10-10')
 
     def EntryHandler_postTest(self):
         weight = 75.0
         variance = 1.4
-        currDate = "2010-10-10"
+        currDate = "2012-10-10"
         currDt =dt.date(2012, 10, 10)
         nick= users.get_current_user().nickname()
         head = {"Content-Type" : "application/x-www-form-urlencoded", "Accept" : "text/plain"}
@@ -159,18 +159,32 @@ class MainTest(unittest.TestCase):
         self.setCurrentUser("adc@adc.com", "aaaaaaa")
         userId=users.get_current_user().user_id()
         db.delete(Entry.all())
-        handler.post(user=users.get_current_user().nickname(),cd='20121010')
+        nick=users.get_current_user().nickname()
+        handler.post(user=nick,cd='2012-10-10')
         Entry(weight=100.0, variance=5.0,date=currDt,user=currUser, parent=log_key(userId)).put()
-        handler.post(user=users.get_current_user().nickname(),cd='20121010')
+        handler.post(user=nick,cd='2012-10-10')
+        #Put Test
+        handler.put(user=nick,cd='2012-10-10')
+        handler.put(user=nick,cd='2012-10-15')
+        handler.delete(user=nick,cd='2012-10-10')
 
     def EntryListHandler_getTest(self):
         request = webapp2.Request.blank('/')
         response = webapp2.Response()
+        currUser=users.get_current_user()
+
         handler = EntryListHandler()
         handler.initialize(request, response)
-        handler.get(sd='2010-10-10',ed='2010-10-10',user=users.get_current_user().nickname())
+        handler.get(sd='2010-10-10',ed='2010-10-10',user=currUser.nickname())
         self.setCurrentUser("adc@adc.com", "aaaaaaa")
-        handler.get(sd='2010-10-10',ed='2010-10-10',user=users.get_current_user().nickname())
+        handler.get(sd='2010-10-10',ed='2010-10-10',user=currUser.nickname())
+        Entry(weight=100.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
+        handler.get(sd='2010-10-10',ed='2010-10-12',user=currUser.nickname())
+    def toDate(self,y,m,d):
+        return dt.date(y,m,d)
+
 
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')

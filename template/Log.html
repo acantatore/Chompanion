@@ -2,66 +2,186 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>Log</title>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <title>Chompanion</title>
+    <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
+    <link href="/static/960_16_col.css" rel='stylesheet' type='text/css'>
+    <link href="/static/text.css" rel='stylesheet' type='text/css'>
+    <link href="/static/jquery-ui.css" rel='stylesheet' type='text/css'>
+    <!-- jQuery -->
+    <script type="text/javascript" src="/static/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.barRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.cursor.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.highlighter.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jqplot.trendline.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css"/>
     <script type="text/javascript">
-        $("document").ready(function() {
-            $.getJSON("http://localhost:8080/users/{{ nick }}/", function(data) {
-
-
-
-                $.each(data, function(i, item) {
-                    $("#div-my-table").append("<p>" + item.height +"</p><p>" + item.bmi + "</p>");
-                });
-
-
-
+        function _ajax_request(url, data, callback, type, method) {
+            if (jQuery.isFunction(data)) {
+                callback = data;
+                data = {};
+            }
+            return jQuery.ajax({
+                type: method,
+                url: url,
+                data: data,
+                success: callback,
+                dataType: type
             });
+        }
+
+        jQuery.extend({
+            put: function(url, data, callback, type) {
+                return _ajax_request(url, data, callback, type, 'PUT');
+            },
+            delete_: function(url, data, callback, type) {
+                return _ajax_request(url, data, callback, type, 'DELETE');
+            }
         });
     </script>
+    <script type="text/javascript" charset="utf-8">
+        $(function () {
+            var pickerOpts = {
+                dateFormat:"dd/mm/yy"
+            };
+            $("#datepicker").datepicker(pickerOpts);
+        });
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        $(function() {
+            $( "#tabs" ).tabs();
+        });
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
 
+            $.jqplot.config.enablePlugins = true;
+            s1 = [
+                {% if entries %}
+                    {% for entry in entries %}
+                        {% if loop.last %}
+                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
+                                    {% else %}
+                                    ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
+                        {% endif %}
+                    {% endfor %}
+                {% endif %} ]
+            plot1 = $.jqplot('chart1', [s1], {
+                title:'Peso y Tendencia',
+                axes:{
+                    xaxis:{
+                        renderer:$.jqplot.DateAxisRenderer,
+                        tickOptions:{
+                            formatString:'%#d/%#m/%y'
+                        },
+                        numberTicks:10
+                    },
+                    yaxis:{
+                        tickOptions:{
+                            formatString:'%.3P'
+                        }
+                    }
+                },
+                highlighter:{
+                    sizeAdjust:10,
+                    tooltipLocation:'n',
+                    tooltipAxes:'y',
+                    useAxesFormatters:false
+                },
+                cursor:{
+                    show:false
+                }
+            });
+        })
+        ;
+    </script>
 </head>
 <body>
-<div><p><a href="{{ url }}">{{ url_linktext }}</a></p></div>
-<div><p><a href="/users/{{ nick }}/">usuario</a></p></div>
-<div>
-    <div id="div-my-table"></div>
-<form action="/users/{{ nick }}/" method="POST">
-    <input value="169" name="height">
-    <input value="80" name="weight">
-    <input value="75" name="target">
-    <input type="submit" value="Log">
-</form>
-<form action="/users/{{ nick }}/entry/"  id="entryForm">
-        <input value="2010-10-10" name="date">
-        <input value="80.1" name="weight">
-        <input value="7.5" name="variance">
-        <input type="submit" value="Entry">
-</form>
+<div class="container_16">
+    <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a></div>
+    <div class="clear"></div>
+        <div id="tabs" class="grid_16 header">
+
+            <div id="username"><p>{{ nick }} | </p>
+                <ul>
+                    <li><a href="#chart1">Grafico</a></li>
+                    <li><a href="#tabs-2">Estadisticas</a></li>
+                </ul>
+                {% if entries %}
+                    <p><div id="chart1" style="height:300px;width:900px; "></div></p>
+                    <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
+                {% else %}
+                    <p><div id="chart1"><img src="/static/PlaceholderND.jpg" width="900" height="300"></div></p>
+                    <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
+
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div class="grid_1"><p></p></div>
+        {% if entries %}
+            {% for entry in entries %}
+                <div class="grid_2 data">
+                    <h3>{{ entry.weight | escape }}</h3>
+                    <p>{{ entry.date|datetime | escape }}</p>
+                    {% if entry.variance < 0 %}
+                        <p class="pos" id="po">{{entry.variance}}</p>
+                    {% else %}
+                        <p class="neg" id="ne">{{entry.variance}}</p>
+                    {% endif %}
+                    <form action="/delete" method="post">
+                        <input type="hidden" value="{{entry.date}}" name="delData">
+                        <input class="del_button" type="submit" value="">
+                    </form>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="grid_1"><p></p></div>
+        <div class="clear"></div>
+        <div class="grid_16 ending"></div>
+        <div class="clear"></div>
+
+            <div class="grid_2 "><p></p></div>
+        <form action="/users/{{ nick }}/" id="bioPost">
+            <div class="grid_2 bottom" id="alt"><p><input value="{{ bio.height }}" name="height"></p></div>
+            <div class="grid_2 bottom" id="obj"><p><input value="{{ bio.target }}" name="target"></p></div>
+        </form>
+        <script>
+            $('#bioPost').change(function() {
+                event.preventDefault();
+                var $form = $( this ),
+                        height = $form.find( 'input[name="height"]' ).val(),
+                        target = $form.find( 'input[name="target"]' ).val(),
+                        url = "/users/{{ nick }}/"/*$form.attr( 'action' );*/
+                $.post( url,{ height: height, target:target });
+
+            });
+        </script>
+        <form action="/users/{{ nick }}/entry/"id="entryPost">
+            <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
+            <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
+            <div class="grid_2 bottom" id="bmi"><p><input value="{{bio.bmi}}" name="bmi"></p></div>
+            <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
+        </form>
+        <script>
+            $("#entryPost").submit(function(event) {
+                event.preventDefault();
+                var $form = $( this ),
+                        date = $form.find( 'input[name="date"]' ).val(),
+                        weight = $form.find( 'input[name="weight"]' ).val(),
+                        variance = $form.find( 'input[name="variance"]' ).val(),
+                        url = $form.attr( 'action' );
+                var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
+                $.post( url+currdt,{ date: date, weight:weight, variance:variance });
+            });
+        </script>
+            <div class="grid_2 "><p></p></div>
+            <div class="grid_16 ending"></div>
+
 </div>
-<!-- the result of the search will be rendered inside this div -->
-<div id="result"></div>
-
-<script>
-    /* attach a submit handler to the form */
-    $("#entryForm").submit(function(event) {
-
-        /* stop form from submitting normally */
-        event.preventDefault();
-
-        /* get some values from elements on the page: */
-        var $form = $( this ),
-                date = $form.find( 'input[name="date"]' ).val(),
-                weight = $form.find( 'input[name="weight"]' ).val(),
-                variance = $form.find( 'input[name="variance"]' ).val(),
-                url = $form.attr( 'action' );
-
-        /* Send the data using post and put the results in a div */
-        $.post( url+date,
-                { date: date, weight:weight, variance:variance }
-
-        );
-    });
-</script>
 </body>
 </html>

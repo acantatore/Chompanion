@@ -1,3 +1,4 @@
+from types import TypeType
 import urllib
 import datetime as dt
 from datetime import timedelta
@@ -18,7 +19,7 @@ import os
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-'''
+
 def format_datetime(value, format='short'):
     if format == 'short':
         format = "%d/%m/%Y"
@@ -27,7 +28,7 @@ def format_datetime(value, format='short'):
 
 jinja_environment.filters['datetime'] = format_datetime
 
-
+'''
 class MainPage(webapp2.RequestHandler):
     def createLoggedTemplates(self, bio_query, log_query, url, url_linktext):
         if bio_query.count(1) == 0 and log_query.count(1) == 0:
@@ -237,39 +238,112 @@ class Log(webapp2.RequestHandler):
 '''
 ################################################################################################
 #app = webapp2.WSGIApplication([('/', MainPage), ('/log', Log), ('/delete', Delete)], debug=True)
-class QueryHandler():
-    def bioquery(self,bio_name):
-        return  Biometric.all().ancestor(bio_key(bio_name))
+class Validation(object):
+    @staticmethod
+    def containsValidationType(validationType):
+        return False
+    def getValidation(self):
+        return 0
+class EntriesValidations(Validation):
+    @staticmethod
+    def containsValidationType(validationType):
+        return validationType in ["entries"]
+    def validateWeight(self,value):
+        w=value
+        if w:
+            return float(w)
+        else:
+            return 0.0
+    def validateVariance(self,value):
+        v=value
+        if v:
+            return float(v)
+        else:
+            return 0.0
+class BiometricsValidations(Validation):
+    @staticmethod
+    def containsValidationType(validationType):
+        return validationType in ["biometrics"]
+    def validateHeight(self,value):
+        h=value
+        if h:
+            return int(h)
+        else:
+            return 0
+    def validateTarget(self,value):
+        t=value
+        if t:
+            return float(t)
+        else:
+            return 0.0
+class ValidationFactory(object):
+    @staticmethod
+    def newValidation(validationType):
+        validationClasses = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Validation)]
+        for validationClass in validationClasses :
+            if validationClass.containsValidationType(validationType):
+                return validationClass()
+                #if research was unsuccessful, raise an error
+        raise ValueError('No validation containing "%s".' % validationType)
 
-    def bioadd(self,bio_name):
-        return  Biometric(parent=bio_key(bio_name))
+class Query(object):
+    @staticmethod
+    def containsQueryType(queryType):
+        return False
+    def getQuery(self):
+        return 0
 
-    def entryquery_dt_d(self,log_name):
-        return  Entry.all().ancestor(log_key(log_name)).order("-date")
+class BiometricsQueries(Query):
+    @staticmethod
+    def containsQueryType(queryType):
+        return queryType in ["biometrics"]
+    def getUser(self,key):
+        return Biometric.all().ancestor(bio_key(key))
+    def createUser(self,key):
+        return Biometric(parent=bio_key(key))
 
-    def entryRsetBuilder(self,log_name):
+class EntryQueries(Query):
+    @staticmethod
+    def containsQueryType(queryType):
+        return queryType in ["entries"]
+
+    def entryRsetBuilder(self,key):
         rset = Entry.all()
-        rset.ancestor(log_key(log_name))
+        rset.ancestor(log_key(key))
         return rset
 
-    def entryquery_fd(self,log_name,logDate):
+    def createEntry(self,key):
+        return Entry(parent=log_key(key))
+
+    def getEntry(self,key,logDate):
         dc = DateCheck()
         date=dc.parseCurrentDate(logDate)
-        rset = self.entryRsetBuilder(log_name)
+        rset = self.entryRsetBuilder(key)
         rset.filter('date =',date)
         return  rset
 
-    def entryquery_f_sded(self,log_name,sd,ed):
+    def getEntrybyDateDesc(self,key):
+        return  Entry.all().ancestor(log_key(key)).order("-date")
+
+    def getEntryList(self,key,sd,ed):
         dc = DateCheck()
         startdate=dc.parseCurrentDate(sd)
         enddate=dc.parseCurrentDate(ed)
-        rset = self.entryRsetBuilder(log_name)
+        rset = self.entryRsetBuilder(key)
         rset.filter('date >=',startdate)
         rset.filter('date <=',enddate)
         return  rset
 
-    def entryadd(self,log_name):
-        return Entry(parent=log_key(log_name))
+
+class QueryFactory(object):
+    @staticmethod
+    def newQuery(queryType):
+        queryClasses = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, Query)]
+        for queryClass in queryClasses :
+            if queryClass.containsQueryType(queryType):
+                return queryClass()
+            #if research was unsuccessful, raise an error
+        raise ValueError('No query containing "%s".' % queryType)
 
 class DateCheck():
     def parseCurrentDate(self,date):
@@ -311,9 +385,8 @@ class RootHandler(webapp2.RequestHandler):
             return template.render(template_values)
 
     def buildTemplate(self,userId,uri):
-        q = QueryHandler()
-        bq = q.bioquery(userId)
-        eq = q.entryquery_dt_d(userId)
+        bq = QueryFactory().newQuery("biometrics").getUser(userId)
+        eq = QueryFactory().newQuery("entries").getEntrybyDateDesc(userId)
         url = users.create_logout_url(uri)
         url_linktext = 'Logout'
         nick = users.get_current_user().nickname()
@@ -364,28 +437,25 @@ class UserOverviewHandler(webapp2.RequestHandler):
         """ Reads the User Data. The path is "/users/{nickname}"
         """
         if user:
-            q = QueryHandler()
-            bq = q.bioquery(users.get_current_user().user_id())
+            key = users.get_current_user().user_id()
+            bq = QueryFactory().newQuery("biometrics").getUser(key)
             if bq.count(1) != 0:
-                #JSON
                 self.response.write(json.encode([b.to_dict() for b in bq]))
-
 
     def post(self,user):
         if user:
-            height =int(self.request.get('height'))
-            target =float(self.request.get('target'))
-            weight =float(self.request.get('weight'))
-            userid = users.get_current_user().user_id()
-            q = QueryHandler()
-            ba= q.bioadd(userid)
-            bq= q.bioquery(userid)
+            height=ValidationFactory().newValidation("biometrics").validateHeight(self.request.get('height'))
+            target=ValidationFactory().newValidation("biometrics").validateTarget(self.request.get('target'))
+            weight=ValidationFactory().newValidation("entries").validateWeight(self.request.get('weight'))
+
+            key = users.get_current_user().user_id()
+            bq= QueryFactory().newQuery("biometrics").getUser(key)
             if bq.count(1) == 0:
-                self.createUserBiometrics(ba,height,target,None)
+                self.createUserBiometrics(QueryFactory().newQuery("biometrics").createUser(key),height,target,weight)
             else:
                 self.validateUserBiometrics(bq,height,target,weight)
 
-            self.redirect('/')
+
 
     def createUserBiometrics(self,ba,height,target,weight):
             self.loadBiometrics(ba,height,target,weight)
@@ -406,42 +476,59 @@ class UserOverviewHandler(webapp2.RequestHandler):
 
 class EntryHandler(webapp2.RequestHandler):
 
-
-    def get(self,user,cd):
-        ac = AuthCheck()
-
-        if user:
-            if ac.checkUser(user):
-                q = QueryHandler()
-
-                eq = q.entryquery_fd(users.get_current_user().user_id(),cd)
-                if eq.count(1) != 0:
-                    #JSON
-                    self.response.write(json.encode([b.to_dict() for b in eq]))
-
-    def post(self,user,cd):
+    def isAuthenticated(self,user,cd):
         ac = AuthCheck()
         dc = DateCheck()
         date = dc.parseCurrentDate(cd)
         if user and date:
-
             if ac.checkUser(user):
-                weight =float(self.request.get('weight'))
-                variance =float(self.request.get('variance'))
-                userid = users.get_current_user().user_id()
-                q = QueryHandler()
-                ea= q.entryadd(userid)
-                eq= q.entryquery_fd(userid,cd)
-                if eq.count(1) == 0:
-                    self.createUserEntry(ea,weight,variance,date)
-                else:
-                    self.validateUserEntry(eq,weight,variance,date)
+                return True
+        return False
+
+    def get(self,user,cd):
+        ac = AuthCheck()
+        if user:
+            if ac.checkUser(user):
+                eq = QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd)
+                if eq.count(1) != 0:
+                    #JSON
+                    self.response.write(json.encode([e.to_dict() for e in eq]))
+
+    def getPostValues(self,cd):
+        dc = DateCheck()
+        date = dc.parseCurrentDate(cd)
+        weight = ValidationFactory().newValidation("entries").validateWeight(self.request.get('weight'))
+        variance =ValidationFactory().newValidation("entries").validateWeight(self.request.get('variance'))
+        userid = users.get_current_user().user_id()
+        return {'date':date,'weight':weight,'variance':variance,'userid':userid}
+
+    def post(self,user,cd):
+        if self.isAuthenticated(user,cd):
+            values = self.getPostValues(cd)
+            eq=QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
+            if eq.count(1) == 0:
+                self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'])
+            else:
+                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'])
+        self.redirect('/users/%s/'% users.get_current_user().nickname())
+
+    def put(self,user,cd):
+        if self.isAuthenticated(user,cd):
+            values = self.getPostValues(cd)
+            eq = QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
+            if eq.count(1) == 1:
+                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'])
+    #PAtron Factory para los queryhandlers
+    def delete(self,user,cd):
+        if self.isAuthenticated(user,cd):
+            rset=QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd).fetch(1)
+            for r in rset:
+                r.delete()
 
     def createUserEntry(self,ea,weight,variance,date):
         self.loadEntry(ea,weight,variance,date)
 
     def validateUserEntry(self,eq,weight,variance,date):
-
         for e in eq:
             self.loadEntry(e,weight,variance,date)
 
@@ -457,12 +544,10 @@ class EntryListHandler(webapp2.RequestHandler):
         ac = AuthCheck()
         if user:
             if ac.checkUser(user):
-                q = QueryHandler()
-                #Esta query trae la ULTIMA y yo quiero una Query que traiga con filtro.
-                eq = q.entryquery_f_sded(users.get_current_user().user_id(),sd,ed)
+                eq = QueryFactory().newQuery("entries").getEntryList(users.get_current_user().user_id(),sd,ed)
                 if eq.count(1) != 0:
                     #JSON
-                    self.response.write(json.encode([b.to_dict() for b in eq]))
+                    self.response.write(json.encode([e.to_dict() for e in eq]))
 
 class DetailHandler(webapp2.RequestHandler):
     def get(self,user,date):
