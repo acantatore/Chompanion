@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="57146c6a-69ae-41e0-9ce9-a8536b567ccd" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/Log.html" afterPath="$PROJECT_DIR$/template/Log.html" />
     </list>
     <ignored path="Chompanion.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -443,7 +442,11 @@
       <created>1336166115837</created>
       <updated>1336166115837</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Full Refactor + JSRender">
+      <created>1336170082041</created>
+      <updated>1336170082041</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
