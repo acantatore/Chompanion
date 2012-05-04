@@ -312,6 +312,13 @@ class EntryQueries(Query):
         rset.ancestor(log_key(key))
         return rset
 
+    def entryRsetBuilderOrderByFetchNum(self,key,orderby,rows):
+        rset = Entry.all()
+        rset.ancestor(log_key(key))
+        rset.order(orderby)
+        return rset.fetch(rows)
+
+
     def createEntry(self,key):
         return Entry(parent=log_key(key))
 
@@ -334,6 +341,9 @@ class EntryQueries(Query):
         rset.filter('date <=',enddate)
         return  rset
 
+    def getEntryWeek(self,key):
+        rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
+        return rset
 
 class QueryFactory(object):
     @staticmethod
@@ -402,6 +412,7 @@ class RootHandler(webapp2.RequestHandler):
         elif bq.count(1) and eq.count(1) > 0:
             template_values = {
                 'uid':userId,
+                'nick':nick,
                 'target': None,#self.targetStatistics(),
                 'bio': bq.fetch(1),
                 'entries': sorted(eq.fetch(7), key=attrgetter('date')),
@@ -542,24 +553,42 @@ class EntryHandler(webapp2.RequestHandler):
 class EntryListHandler(webapp2.RequestHandler):
     def get(self,user,sd,ed):
         ac = AuthCheck()
-        if user:
-            if ac.checkUser(user):
-                eq = QueryFactory().newQuery("entries").getEntryList(users.get_current_user().user_id(),sd,ed)
-                if eq.count(1) != 0:
-                    #JSON
-                    self.response.write(json.encode([e.to_dict() for e in eq]))
+        if user and ac.checkUser(user):
+                self.response.write(
+                    jsonBuilder.encodeResponse(
+                        QueryFactory().newQuery("entries").getEntryList(users.get_current_user().user_id(),sd,ed)
+                    )
+                )
+
+
+class EntryWeekHandler(webapp2.RequestHandler):
+    def get(self,user):
+        ac = AuthCheck()
+        if user and ac.checkUser(user):
+                self.response.write(
+                    jsonBuilder.encodeResponse(
+                        QueryFactory.newQuery("entries").getEntryWeek(users.get_current_user().user_id())
+                    )
+                )
+
 
 class DetailHandler(webapp2.RequestHandler):
     def get(self,user,date):
         print('DetailHandler')
 
-
+class jsonBuilder(object):
+    @staticmethod
+    def encodeResponse(eq):
+        if eq:
+            #JSON
+            return json.encode([e.to_dict() for e in eq])
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', RootHandler, 'index'),
     routes.PathPrefixRoute('/users/<user:.+>',[
         webapp2.Route('/', UserOverviewHandler, 'user-overview'),
         webapp2.Route('/entry-list/<sd:.+>,<ed:.+>', EntryListHandler, 'entry-list'),
+        webapp2.Route('/entry-week', EntryWeekHandler, 'entry-week'),
 #        webapp2.Route('/entry/<cd:^(19[0-9]{2}|2[0-9]{3})(0[1-9]|1[012])([123]0|[012][1-9]|31)>', EntryHandler, 'entry'),
         webapp2.Route('/entry/<cd:.+>', EntryHandler, 'entry'),
         webapp2.Route('/entry/<date:(\d{4})-(\d{2})-(\d{2})>/detail', DetailHandler, 'detail'),

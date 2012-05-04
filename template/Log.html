@@ -3,12 +3,16 @@
 <html>
 <head>
     <title>Chompanion</title>
+    <!-- CSS -->
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script|Oxygen' rel='stylesheet' type='text/css'>
     <link href="/static/960_16_col.css" rel='stylesheet' type='text/css'>
     <link href="/static/text.css" rel='stylesheet' type='text/css'>
     <link href="/static/jquery-ui.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css"/>
     <!-- jQuery -->
     <script type="text/javascript" src="/static/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
+    <!-- jQplot -->
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.barRenderer.min.js"></script>
@@ -16,8 +20,12 @@
     <script type="text/javascript" src="/static/plugins/jqplot.cursor.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.highlighter.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.trendline.min.js"></script>
-    <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.min.css"/>
+    <!-- JsRender & JsView TODO: Minifi-->
+    <script type="text/javascript" src="/static/jsrender.js"></script>
+    <script type="text/javascript" src="/static/jquery.views.js"></script>
+    <script type="text/javascript" src="/static/jquery.observable.js"></script>
+
+    <!-- ReST Put & Delete Methods Extensions for jQuery -->
     <script type="text/javascript">
         function _ajax_request(url, data, callback, type, method) {
             if (jQuery.isFunction(data)) {
@@ -42,6 +50,7 @@
             }
         });
     </script>
+<!-- Date Picker Formatter -->
     <script type="text/javascript" charset="utf-8">
         $(function () {
             var pickerOpts = {
@@ -50,58 +59,65 @@
             $("#datepicker").datepicker(pickerOpts);
         });
     </script>
+<!-- jQueryUI Tabs component -->
     <script type="text/javascript" charset="utf-8">
         $(function() {
             $( "#tabs" ).tabs();
         });
     </script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
 
-            $.jqplot.config.enablePlugins = true;
-            s1 = [
-                {% if entries %}
-                    {% for entry in entries %}
-                        {% if loop.last %}
-                            ['{{ entry.date | escape }}',{{ entry.weight | escape }}]
-                                    {% else %}
-                                    ['{{ entry.date | escape }}',{{ entry.weight | escape }}],
-                        {% endif %}
-                    {% endfor %}
-                {% endif %} ]
-            plot1 = $.jqplot('chart1', [s1], {
-                title:'Peso y Tendencia',
-                axes:{
-                    xaxis:{
-                        renderer:$.jqplot.DateAxisRenderer,
-                        tickOptions:{
-                            formatString:'%#d/%#m/%y'
-                        },
-                        numberTicks:10
-                    },
-                    yaxis:{
-                        tickOptions:{
-                            formatString:'%.3P'
-                        }
+    <script type="text/javascript">
+        jQuery.extend({
+            getValues: function(url) {
+                var result = null;
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    dataType:'json',
+                    async: false,
+                    success: function(data) {
+                        result = data;
                     }
-                },
-                highlighter:{
-                    sizeAdjust:10,
-                    tooltipLocation:'n',
-                    tooltipAxes:'y',
-                    useAxesFormatters:false
-                },
-                cursor:{
-                    show:false
-                }
-            });
-        })
-        ;
+                });
+                return result;
+            }
+        });
     </script>
+
+    <script type="text/javascript" charset="utf-8">
+
+        $(document).ready(function () {
+            var line = [];
+            $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){
+                $.each(data,function(index){
+                    line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
+
+                });
+
+                    $.jqplot.config.enablePlugins = true;
+
+                s1 = [line]
+                plot1 = $.jqplot('chart1', s1, {
+                    title:'Default Date Axis',
+                    axes:{
+                        xaxis:{
+                            renderer:$.jqplot.DateAxisRenderer
+                        }
+                    },
+                    series:[{lineWidth:4, markerOptions:{style:'square'}}]
+                });
+        });
+
+        });
+    </script>
+
 </head>
 <body>
 <div class="container_16">
-    <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a></div>
+    <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a>
+
+    </div>
+
     <div class="clear"></div>
         <div id="tabs" class="grid_16 header">
 
@@ -123,23 +139,24 @@
         </div>
         <div class="clear"></div>
         <div class="grid_1"><p></p></div>
-        {% if entries %}
-            {% for entry in entries %}
-                <div class="grid_2 data">
-                    <h3>{{ entry.weight | escape }}</h3>
-                    <p>{{ entry.date|datetime | escape }}</p>
-                    {% if entry.variance < 0 %}
-                        <p class="pos" id="po">{{entry.variance}}</p>
-                    {% else %}
-                        <p class="neg" id="ne">{{entry.variance}}</p>
-                    {% endif %}
-                    <form action="/delete" method="post">
-                        <input type="hidden" value="{{entry.date}}" name="delData">
-                        <input class="del_button" type="submit" value="">
-                    </form>
-                </div>
-            {% endfor %}
-        {% endif %}
+    <script id="entryListTemplate" type="text/x-jsrender">
+        <div class="grid_2 data">
+            {% raw %}
+            <h3>{{:weight}}</h3>
+            <p>{{:date}}</p>
+            <p class="pos" id="po">{{:variance}}</p>
+            {% endraw %}
+        </div>
+    </script>
+    <div id="elist"></div>
+        <script type="text/javascript">
+            var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
+            $("#elist").html(
+                    $("#entryListTemplate").render(results.reverse())
+            )
+        </script>
+
+
         <div class="grid_1"><p></p></div>
         <div class="clear"></div>
         <div class="grid_16 ending"></div>
@@ -177,6 +194,10 @@
                         url = $form.attr( 'action' );
                 var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
                 $.post( url+currdt,{ date: date, weight:weight, variance:variance });
+                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
+                $("#elist").html(
+                        $("#entryListTemplate").render(results.reverse())
+                )
             });
         </script>
             <div class="grid_2 "><p></p></div>

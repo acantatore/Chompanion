@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57146c6a-69ae-41e0-9ce9-a8536b567ccd" name="Default" comment="">
+    <list default="true" id="57146c6a-69ae-41e0-9ce9-a8536b567ccd" name="Default" comment="Full Refactor JsR">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/Log.html" afterPath="$PROJECT_DIR$/template/Log.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/SUT_Chompanion.py" afterPath="$PROJECT_DIR$/test/SUT_Chompanion.py" />
     </list>
     <ignored path="Chompanion.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,18 +33,25 @@
       <file leaf-file-name="SUT_Chompanion.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/SUT_Chompanion.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="0" selection-start="2496" selection-end="2496" vertical-scroll-proportion="-4.2">
-              <folding>
-                <element signature="e#35#44#0" expanded="true" />
-              </folding>
+            <state line="87" column="0" selection-start="3088" selection-end="3088" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="users.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/api/users.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="158" column="0" selection-start="4203" selection-end="4203" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="512" column="0" selection-start="18240" selection-end="18240" vertical-scroll-proportion="0.33333334">
+            <state line="344" column="58" selection-start="11763" selection-end="11763" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -53,28 +59,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="webapp2.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://C:/Program Files (x86)/Google/google_appengine/lib/webapp2/webapp2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1101" column="0" selection-start="38284" selection-end="38284" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/template/Index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="6266" vertical-scroll-proportion="-0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Log.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Log.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/template/Log.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="178" column="85" selection-start="7915" selection-end="7915" vertical-scroll-proportion="-3.3461537">
+            <state line="99" column="0" selection-start="3900" selection-end="3900" vertical-scroll-proportion="2.978761">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="app.yaml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -123,8 +120,9 @@
         <option value="$PROJECT_DIR$/template/Demo.html" />
         <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/test/SUT_Chompanion.py" />
-        <option value="$PROJECT_DIR$/template/Log.html" />
+        <option value="$PROJECT_DIR$/template/Test.html" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/template/Log.html" />
       </list>
     </option>
   </component>
@@ -245,11 +243,11 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="recentsLimit" value="5" />
     <property name="options.lastSelected" value="Settings.JavaScript.Linters.JSHint" />
+    <property name="recentsLimit" value="5" />
     <property name="DefaultHtmlFileTemplate" value="Html" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -261,6 +259,15 @@
   </component>
   <component name="PyCoverageOptionsProvider">
     <option name="myUseBundledCoveragePy" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Projects\Chompanion\template" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Chompanion\template" />
+      <recent name="C:\Projects\Chompanion" />
+    </key>
   </component>
   <component name="RunManager" selected="App Engine server.Chompanion">
     <configuration default="true" type="Python.AppEngineServer" factoryName="App Engine server">
@@ -420,29 +427,33 @@
       <created>1335557964018</created>
       <updated>1335557964018</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Full Refactor">
+      <created>1335910995870</created>
+      <updated>1335910995870</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="776" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19967532" sideWeight="0.59253246" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32792208" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22077923" sideWeight="0.59253246" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.40746754" sideWeight="0.48701298" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23295455" sideWeight="0.99723756" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6533333" sideWeight="0.99759036" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40746754" sideWeight="0.5073052" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4431818" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.0" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32792208" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19967532" sideWeight="0.59253246" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="CSS-X-Fire" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
@@ -509,15 +520,11 @@
       <breakpoints>
         <line-breakpoint type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>411</line>
+          <line>422</line>
         </line-breakpoint>
         <line-breakpoint type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>419</line>
-        </line-breakpoint>
-        <line-breakpoint type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>446</line>
+          <line>457</line>
         </line-breakpoint>
         <line-breakpoint type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
@@ -527,135 +534,100 @@
           <url>file://$PROJECT_DIR$/main.py</url>
           <line>273</line>
         </line-breakpoint>
-        <line-breakpoint type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>392</line>
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>512</line>
+          <url>file://$PROJECT_DIR$/test/SUT_Chompanion.py</url>
+          <line>87</line>
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/Python27/Lib/unittest/suite.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="116" column="0" selection-start="3614" selection-end="3614" vertical-scroll-proportion="0.33221477">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pycharm/utrunner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="0" selection-start="1253" selection-end="1253" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/template/Login.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="62" selection-start="202" selection-end="244" vertical-scroll-proportion="-4.576923">
-          <folding />
-        </state>
+        <state line="7" column="62" selection-start="202" selection-end="244" vertical-scroll-proportion="-4.576923" />
       </provider>
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/ext/appstats/recording.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1040" column="0" selection-start="34807" selection-end="34807" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="1040" column="0" selection-start="34807" selection-end="34807" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/runtime/wsgi.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="267" column="0" selection-start="9084" selection-end="9084" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="267" column="0" selection-start="9084" selection-end="9084" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/runtime/runtime.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="0" selection-start="4609" selection-end="4609" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="151" column="0" selection-start="4609" selection-end="4609" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/tools/dev_appserver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="691" column="0" selection-start="21938" selection-end="21938" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="691" column="0" selection-start="21938" selection-end="21938" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://C:/Python27/Lib/unittest/case.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="317" column="0" selection-start="10566" selection-end="10566" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#32#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/api/users.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="169" column="0" selection-start="4483" selection-end="4483" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="317" column="0" selection-start="10566" selection-end="10566" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/unittest_Chompanion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="45" selection-start="2012" selection-end="2129" vertical-scroll-proportion="0.6416382">
-          <folding>
-            <element signature="e#35#44#0" expanded="true" />
-          </folding>
+        <state line="67" column="45" selection-start="2012" selection-end="2129" vertical-scroll-proportion="0.6416382" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/Index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="6266" vertical-scroll-proportion="-0.0" />
+      </provider>
+    </entry>
+    <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/api/users.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="158" column="0" selection-start="4203" selection-end="4203" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/SUT_Chompanion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="0" selection-start="2496" selection-end="2496" vertical-scroll-proportion="-4.2">
-          <folding>
-            <element signature="e#35#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/template/Index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="6266" vertical-scroll-proportion="-0.0">
+        <state line="87" column="0" selection-start="3088" selection-end="3088" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="25" selection-start="779" selection-end="779" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="24" column="25" selection-start="779" selection-end="779" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/template/Log.html">
+    <entry file="file://$PROJECT_DIR$/app.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="178" column="85" selection-start="7915" selection-end="7915" vertical-scroll-proportion="-3.3461537">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/lib/webapp2/webapp2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1101" column="0" selection-start="38284" selection-end="38284" vertical-scroll-proportion="0.0">
+        <state line="1529" column="0" selection-start="53629" selection-end="53629" vertical-scroll-proportion="0.33195877">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="512" column="0" selection-start="18240" selection-end="18240" vertical-scroll-proportion="0.33333334">
+        <state line="344" column="58" selection-start="11763" selection-end="11763" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template/Log.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="99" column="0" selection-start="3900" selection-end="3900" vertical-scroll-proportion="2.978761">
+          <folding />
         </state>
       </provider>
     </entry>
