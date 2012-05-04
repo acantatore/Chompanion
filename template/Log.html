@@ -86,7 +86,8 @@
 
     <script type="text/javascript" charset="utf-8">
 
-        $(document).ready(function () {
+        jQuery.extend({
+            drawChart:function(){
             var line = [];
             $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){
                 $.each(data,function(index){
@@ -107,26 +108,32 @@
                     series:[{lineWidth:4, markerOptions:{style:'square'}}]
                 });
         });
+            }})
 
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            $.drawChart()
         });
     </script>
-
 </head>
 <body>
 <div class="container_16">
-    <div class="grid_16 header"><h1>CHOMPanion</h1><a href="{{ url }}">{{ url_linktext }}</a>
-
+    <div class="grid_16 header">
+        CHOMPanion | <b>{{ nick }} | </b><a href="{{ url }}">{{ url_linktext }}</a>
     </div>
 
     <div class="clear"></div>
         <div id="tabs" class="grid_16 header">
 
-            <div id="username"><p>{{ nick }} | </p>
+            <div id="username">
                 <ul>
                     <li><a href="#chart1">Grafico</a></li>
                     <li><a href="#tabs-2">Estadisticas</a></li>
                 </ul>
+            <!-- Reemplazar la lógica por JQuery?-->
                 {% if entries %}
+
                     <p><div id="chart1" style="height:300px;width:900px; "></div></p>
                     <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
                 {% else %}
@@ -198,6 +205,7 @@
                 $("#elist").html(
                         $("#entryListTemplate").render(results.reverse())
                 )
+                $.drawChart()
             });
         </script>
             <div class="grid_2 "><p></p></div>

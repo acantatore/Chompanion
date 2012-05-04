@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57146c6a-69ae-41e0-9ce9-a8536b567ccd" name="Default" comment="Full Refactor JsR">
+    <list default="true" id="57146c6a-69ae-41e0-9ce9-a8536b567ccd" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/template/Log.html" afterPath="$PROJECT_DIR$/template/Log.html" />
     </list>
     <ignored path="Chompanion.iws" />
@@ -62,7 +61,16 @@
       <file leaf-file-name="Log.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/template/Log.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="99" column="0" selection-start="3900" selection-end="3900" vertical-scroll-proportion="2.978761">
+            <state line="116" column="11" selection-start="4452" selection-end="4452" vertical-scroll-proportion="0.3611111">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/template/Index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="39" selection-start="2116" selection-end="2148" vertical-scroll-proportion="-5.230769">
               <folding />
             </state>
           </provider>
@@ -431,13 +439,18 @@
       <created>1335910995870</created>
       <updated>1335910995870</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Full Refactor + JSRender">
+      <created>1336166115837</created>
+      <updated>1336166115837</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="776" extended-state="6" />
     <editor active="false" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -452,7 +465,6 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19967532" sideWeight="0.59253246" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="CSS-X-Fire" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -497,7 +509,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Full Refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Full Refactor + JSRender" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -514,6 +526,7 @@
     <MESSAGE value="Modificaciones al calculode BMI" />
     <MESSAGE value="Improvements week 23" />
     <MESSAGE value="Full Refactor" />
+    <MESSAGE value="Full Refactor + JSRender" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -577,11 +590,6 @@
         <state line="67" column="45" selection-start="2012" selection-end="2129" vertical-scroll-proportion="0.6416382" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/template/Index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="6266" vertical-scroll-proportion="-0.0" />
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files (x86)/Google/google_appengine/google/appengine/api/users.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="158" column="0" selection-start="4203" selection-end="4203" vertical-scroll-proportion="0.0">
@@ -624,9 +632,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/template/Index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="39" selection-start="2116" selection-end="2148" vertical-scroll-proportion="-5.230769">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/template/Log.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="99" column="0" selection-start="3900" selection-end="3900" vertical-scroll-proportion="2.978761">
+        <state line="116" column="11" selection-start="4452" selection-end="4452" vertical-scroll-proportion="0.3611111">
           <folding />
         </state>
       </provider>
