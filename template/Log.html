@@ -12,8 +12,7 @@
     <!-- jQuery -->
     <script type="text/javascript" src="/static/jquery.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
-    <!-- jQuery Validator -->
-    <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
+
     <!-- jQplot -->
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
@@ -142,8 +141,9 @@
     </script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
-            $.drawChart()
+            $.drawChart();
             $.renderBioData()
+
         });
     </script>
 
@@ -191,12 +191,13 @@
 
             <div class="grid_2 "><p></p></div>
         <form action="/users/{{ nick }}/" id="bioPost">
-            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value=""></p></div>
-            <div class="grid_2 bottom" id="obj"><p><input id="in_obj" type="text" name="target" value=""></p></div>
+            <div class="grid_2 bottom" id="alt"><p><input id="height" type="text"  name="height" value=""></p></div>
+            <div class="grid_2 bottom" id="obj"><p><input id="target" type="text" name="target" value=""></p></div>
         </form>
         <script>
             $('#bioPost').change(function() {
                 event.preventDefault();
+
                 var $form = $( this ),
                         height = $form.find( 'input[name="height"]' ).val(),
                         target = $form.find( 'input[name="target"]' ).val(),
