@@ -83,7 +83,16 @@
             }
         });
     </script>
-
+    <script type="text/javascript" charset="utf-8">
+        jQuery.extend({
+            renderEntryList:function(){
+                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
+                $("#elist").html(
+                        $("#entryListTemplate").render(results.reverse())
+                )
+            }
+        });
+    </script>
     <script type="text/javascript" charset="utf-8">
 
         jQuery.extend({
@@ -102,20 +111,38 @@
                     title:'Default Date Axis',
                     axes:{
                         xaxis:{
-                            renderer:$.jqplot.DateAxisRenderer
+                            renderer:$.jqplot.DateAxisRenderer,
+                            tickOptions:{
+                                formatString:'%#d/%#m'
+                            },
+                            numberTicks:9
                         }
+
                     },
-                    series:[{lineWidth:4, markerOptions:{style:'square'}}]
+                    series:[{lineWidth:5, markerOptions:{style:'circle'}}]
                 });
         });
             }})
 
     </script>
     <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            $.drawChart()
+        jQuery.extend({
+            renderBioData:function(){
+                var results = $.getValues("http://localhost:8080/users/{{ nick }}/");
+                $('body').data('target',results[0].target);
+                $('body').data('height',results[0].height);
+                $('#in_alt').val($('body').data('height'));
+                $('#in_obj').val($('body').data('target'))
+            }
         });
     </script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            $.drawChart()
+            $.renderBioData()
+        });
+    </script>
+
 </head>
 <body>
 <div class="container_16">
@@ -157,10 +184,7 @@
     </script>
     <div id="elist"></div>
         <script type="text/javascript">
-            var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
-            $("#elist").html(
-                    $("#entryListTemplate").render(results.reverse())
-            )
+            $.renderEntryList()
         </script>
 
 
@@ -171,8 +195,8 @@
 
             <div class="grid_2 "><p></p></div>
         <form action="/users/{{ nick }}/" id="bioPost">
-            <div class="grid_2 bottom" id="alt"><p><input value="{{ bio.height }}" name="height"></p></div>
-            <div class="grid_2 bottom" id="obj"><p><input value="{{ bio.target }}" name="target"></p></div>
+            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value=""></p></div>
+            <div class="grid_2 bottom" id="obj"><p><input id="in_obj" type="text" name="target" value=""></p></div>
         </form>
         <script>
             $('#bioPost').change(function() {
@@ -188,7 +212,7 @@
         <form action="/users/{{ nick }}/entry/"id="entryPost">
             <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
             <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-            <div class="grid_2 bottom" id="bmi"><p><input value="{{bio.bmi}}" name="bmi"></p></div>
+            <div class="grid_2 bottom" id="bmi"><p><input value="" name="bmi"></p></div>
             <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         </form>
         <script>
@@ -201,10 +225,7 @@
                         url = $form.attr( 'action' );
                 var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
                 $.post( url+currdt,{ date: date, weight:weight, variance:variance });
-                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
-                $("#elist").html(
-                        $("#entryListTemplate").render(results.reverse())
-                )
+                $.renderEntryList()
                 $.drawChart()
             });
         </script>

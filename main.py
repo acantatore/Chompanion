@@ -223,7 +223,7 @@ class Log(webapp2.RequestHandler):
             if weight:
                 if weight:
                     if height > 0:
-                        q.bmi = float(weight) / (height/100.0)**2.0
+                        q.bmi =
             else:
                 q.bmi = 0.00
             q.put()
@@ -329,6 +329,11 @@ class EntryQueries(Query):
         rset.filter('date =',date)
         return  rset
 
+    def getEntryZeroBMI(self,key):
+        rset = self.entryRsetBuilder(key)
+        rset.filter('bmi =',0.0)
+        return  rset
+
     def getEntrybyDateDesc(self,key):
         return  Entry.all().ancestor(log_key(key)).order("-date")
 
@@ -370,6 +375,26 @@ class AuthCheck():
             return True
         return False
 
+class BMICheck(object):
+    @staticmethod
+    def updateBMI(self,user):
+        ac = AuthCheck()
+        if ac.checkUser(user):
+            key = users.get_current_user().user_id()
+            eq=QueryFactory().newQuery("entries").getEntryZeroBMI(key)
+            bq= QueryFactory().newQuery("biometrics").getUser(key)
+            if eq.count(1) > 0 and bq[0].height > 0:
+                height = bq[0].height
+                for e in eq:
+                    weight = e.weight
+                    if weight > 0:
+                        e.bmi = float(weight) / (height/100.0)**2.0
+                        e.put()
+                    else:
+                        e.bmi = 0.00
+                        e.put()
+
+
 class RootHandler(webapp2.RequestHandler):
     """ This is the entry point class for Chompanion, handles the template construction
         get()
@@ -400,42 +425,14 @@ class RootHandler(webapp2.RequestHandler):
         url = users.create_logout_url(uri)
         url_linktext = 'Logout'
         nick = users.get_current_user().nickname()
-        if bq.count(1) == 0 and eq.count(1) == 0:
-            template_values = {
-                'uid':userId,
-                'nick': nick,
-                'bio': None,
-                'entries': None,
-                'url': url,
-                'url_linktext': url_linktext,
-                }
-        elif bq.count(1) and eq.count(1) > 0:
-            template_values = {
-                'uid':userId,
-                'nick':nick,
-                'target': None,#self.targetStatistics(),
-                'bio': bq.fetch(1),
-                'entries': sorted(eq.fetch(7), key=attrgetter('date')),
-                'url': url,
-                'url_linktext': url_linktext,
-                }
-        elif bq.count(1) == 0 and eq.count(1) > 0:
-            template_values = {
-                'uid':userId,
-                'bio': None,
-                'entries': sorted(eq.fetch(7), key=attrgetter('date')),
-                'url': url,
-                'url_linktext': url_linktext,
-                }
-        else:
-            template_values = {
-                'uid':userId,
-                'nick':nick,
-                #'date': currDate,
-                'bio': bq.fetch(1),
-                'entries': None,
-                'url': url,
-                'url_linktext': url_linktext, }
+
+        template_values = {
+            'uid':userId,
+            'nick': nick,
+            'url': url,
+            'url_linktext': url_linktext,
+            }
+
         return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
@@ -449,6 +446,7 @@ class UserOverviewHandler(webapp2.RequestHandler):
         """
         if user:
             key = users.get_current_user().user_id()
+            BMICheck.updateBMI(self,user)
             bq = QueryFactory().newQuery("biometrics").getUser(key)
             if bq.count(1) != 0:
                 self.response.write(json.encode([b.to_dict() for b in bq]))
@@ -500,6 +498,7 @@ class EntryHandler(webapp2.RequestHandler):
         ac = AuthCheck()
         if user:
             if ac.checkUser(user):
+
                 eq = QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd)
                 if eq.count(1) != 0:
                     #JSON
@@ -517,11 +516,15 @@ class EntryHandler(webapp2.RequestHandler):
         if self.isAuthenticated(user,cd):
             values = self.getPostValues(cd)
             eq=QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
+            bq= QueryFactory().newQuery("biometrics").getUser(key)
             if eq.count(1) == 0:
-                self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'])
+                self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'], bq[0].height)
             else:
-                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'])
+                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'], bq[0].height)
+
         self.redirect('/users/%s/'% users.get_current_user().nickname())
+
+
 
     def put(self,user,cd):
         if self.isAuthenticated(user,cd):
@@ -536,16 +539,20 @@ class EntryHandler(webapp2.RequestHandler):
             for r in rset:
                 r.delete()
 
-    def createUserEntry(self,ea,weight,variance,date):
-        self.loadEntry(ea,weight,variance,date)
+    def createUserEntry(self,ea,weight,variance,date,height):
+        self.loadEntry(ea,weight,variance,date,height)
 
-    def validateUserEntry(self,eq,weight,variance,date):
+    def validateUserEntry(self,eq,weight,variance,date,height):
         for e in eq:
-            self.loadEntry(e,weight,variance,date)
+            self.loadEntry(e,weight,variance,date,height)
 
-    def loadEntry(self,e,weight,variance,date):
+    def loadEntry(self,e,weight,variance,date,height):
         e.user = users.get_current_user()
         e.weight = weight
+        if weight and height > 0:
+            e.bmi = float(weight) / (height/100.0)**2.0
+        else:
+            e.bmi = 0.00
         e.variance = variance
         e.date = date
         e.put()
