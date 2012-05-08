@@ -1,4 +1,5 @@
 from types import TypeType
+from decimal import *
 import urllib
 import datetime as dt
 from datetime import timedelta
@@ -178,7 +179,7 @@ class BMICheck(object):
                 for e in eq:
                     weight = e.weight
                     if weight > 0:
-                        e.bmi = float(weight) / (height/100.0)**2.0
+                        e.bmi = round(float(weight) / (height/100.0)**2.0,2)
                         e.put()
                     else:
                         e.bmi = 0.00
@@ -206,7 +207,7 @@ class RootHandler(webapp2.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext,
                 }
-            template = jinja_environment.get_template('/template/Demo.html')
+            template = jinja_environment.get_template('/template/Login.html')
             return template.render(template_values)
 
     def buildTemplate(self,userId,uri):
@@ -268,7 +269,8 @@ class UserOverviewHandler(webapp2.RequestHandler):
         b.height = height
         b.target = target
         if weight and height > 0:
-            b.bmi = float(weight) / (height/100.0)**2.0
+            bmi=Decimal((weight) / (height/100.0)**2.0).quantize(Decimal('.01'),rounding=ROUND_UP)
+            e.bmi = float(bmi)
         else:
             b.bmi = 0.00
         b.put()
@@ -306,7 +308,7 @@ class EntryHandler(webapp2.RequestHandler):
         if self.isAuthenticated(user,cd):
             values = self.getPostValues(cd)
             eq=QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
-            bq= QueryFactory().newQuery("biometrics").getUser(key)
+            bq= QueryFactory().newQuery("biometrics").getUser(values['userid'])
             if eq.count(1) == 0:
                 self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'], bq[0].height)
             else:
@@ -340,7 +342,8 @@ class EntryHandler(webapp2.RequestHandler):
         e.user = users.get_current_user()
         e.weight = weight
         if weight and height > 0:
-            e.bmi = float(weight) / (height/100.0)**2.0
+            bmi=Decimal((weight) / (height/100.0)**2.0).quantize(Decimal('.01'),rounding=ROUND_UP)
+            e.bmi = float(bmi)
         else:
             e.bmi = 0.00
         e.variance = variance

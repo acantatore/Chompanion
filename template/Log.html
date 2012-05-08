@@ -83,13 +83,15 @@
             }
         });
     </script>
+    <!-- hacer una sola llamada a entry week -->
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderEntryList:function(){
                 var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
                 $("#elist").html(
                         $("#entryListTemplate").render(results.reverse())
-                )
+                );
+
             }
         });
     </script>
@@ -158,17 +160,9 @@
                     <li><a href="#chart1">Grafico</a></li>
                     <li><a href="#tabs-2">Estadisticas</a></li>
                 </ul>
-            <!-- Reemplazar la lógica por JQuery?-->
-                {% if entries %}
-
+            <!-- TODO:Reemplazar la lógica por JQuery-->
                     <p><div id="chart1" style="height:300px;width:900px; "></div></p>
                     <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
-                {% else %}
-                    <p><div id="chart1"><img src="/static/PlaceholderND.jpg" width="900" height="300"></div></p>
-                    <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
-
-                {% endif %}
-
             </div>
         </div>
         <div class="clear"></div>
@@ -178,7 +172,7 @@
             {% raw %}
             <h3>{{:weight}}</h3>
             <p>{{:date}}</p>
-            <p class="pos" id="po">{{:variance}}</p>
+            <p class="pos" id="po">{{:variance}}|{{:bmi}}</p>
             {% endraw %}
         </div>
     </script>
@@ -212,7 +206,6 @@
         <form action="/users/{{ nick }}/entry/"id="entryPost">
             <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
             <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-            <div class="grid_2 bottom" id="bmi"><p><input value="" name="bmi"></p></div>
             <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         </form>
         <script>
