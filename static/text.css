@@ -96,8 +96,11 @@ div.bottom#dat{
 div.bottom#dat input:empty{
     background-color: #f7e4b0;
 }
-div.bottom#bmi{
-    background-image: url("/static/bmi_bgr.png");
+div.bottom#alt input:empty{
+    background-color: #f7e4b0;
+}
+div.bottom#obj input:empty{
+    background-color: #f7e4b0;
 }
 div.bottom input{
     border: 1px solid #fff;

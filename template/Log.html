@@ -12,7 +12,7 @@
     <!-- jQuery -->
     <script type="text/javascript" src="/static/jquery.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
-
+    <script type="text/javascript" src="/static/jquery.validate.min.js"></script>
     <!-- jQplot -->
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
@@ -128,6 +128,17 @@
             }})
 
     </script>
+    <script type="text/javascript">
+        jQuery.extend({
+            postBioData:function(frm){
+                var $form = $( frm ),
+                        height = $( '#bioPost input[name="height"]' ).val(),
+                        target = $( '#bioPost input[name="target"]' ).val(),
+                        url = "/users/{{ nick }}/";
+                $.post( url,{ height: height, target:target });
+        }
+                });
+    </script>
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderBioData:function(){
@@ -190,20 +201,22 @@
         <div class="clear"></div>
 
             <div class="grid_2 "><p></p></div>
-        <form action="/users/{{ nick }}/" id="bioPost">
-            <div class="grid_2 bottom" id="alt"><p><input id="height" type="text"  name="height" value=""></p></div>
-            <div class="grid_2 bottom" id="obj"><p><input id="target" type="text" name="target" value=""></p></div>
+        <form action="/users/{{ nick }}/" id="bioPost" name="bioPost">
+            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value=""></p></div>
+            <div class="grid_2 bottom" id="obj"><p><input class="required" id="in_obj" type="text" name="target" value=""></p></div>
         </form>
+    <script>
+        $("#bioPost input[name=target]").change(function() {
+            event.preventDefault();
+            $.postBioData(this)
+            $("#in_obj").effect("highlight", {}, 1500);
+        });
+    </script>
         <script>
-            $('#bioPost').change(function() {
+            $("#bioPost input[name=height]").change(function() {
                 event.preventDefault();
-
-                var $form = $( this ),
-                        height = $form.find( 'input[name="height"]' ).val(),
-                        target = $form.find( 'input[name="target"]' ).val(),
-                        url = "/users/{{ nick }}/"/*$form.attr( 'action' );*/
-                $.post( url,{ height: height, target:target });
-
+                $.postBioData(this);
+                $("#in_alt").effect("highlight", {}, 1500);
             });
         </script>
         <form action="/users/{{ nick }}/entry/"id="entryPost">
