@@ -87,23 +87,22 @@ div.bottom#pes{
 
     background-image: url("/static/pes_bgr.png");
 }
-div.bottom#pes input:empty{
-    background-color: #f7e4b0;
-}
 div.bottom#dat{
     background-image: url("/static/fec_bgr.png");
 }
-div.bottom#dat input:empty{
+div.bottom input:hover{
     background-color: #f7e4b0;
 }
-div.bottom#alt input:empty{
-    background-color: #f7e4b0;
+div.bottom button {
+    background-color: #c3c3c3
 }
-div.bottom#obj input:empty{
-    background-color: #f7e4b0;
+div.bottom button:hover
+{
+    background-color: #f7e4b0
 }
 div.bottom input{
-    border: 1px solid #fff;
+    background-color: #ffffff;
+    border: 1px solid #c3c3c3;
     text-align: center;
     font-size: 0.9em;
     font-family: "oxygen";
