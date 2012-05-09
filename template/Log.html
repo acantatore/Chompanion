@@ -220,7 +220,7 @@
             });
         </script>
         <form action="/users/{{ nick }}/entry/"id="entryPost">
-            <div class="grid_2 bottom" id="pes"><p><input value="" name="weight"></p></div>
+            <div class="grid_2 bottom" id="pes"><p><input id=in_wei value="" name="weight"></p></div>
             <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
             <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
         </form>
@@ -234,8 +234,11 @@
                         url = $form.attr( 'action' );
                 var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
                 $.post( url+currdt,{ date: date, weight:weight, variance:variance });
-                $.renderEntryList()
-                $.drawChart()
+
+
+                $.renderEntryList();
+                $.drawChart();
+                $("#in_wei").effect("highlight", {}, 1500);
             });
         </script>
             <div class="grid_2 "><p></p></div>
