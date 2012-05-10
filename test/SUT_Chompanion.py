@@ -8,6 +8,7 @@ from main import DetailHandler
 from main import UserOverviewHandler
 from main import AuthCheck
 from main import EntryWeekHandler
+from main import format_datetime
 from model import Entry,log_key
 from model import Biometric,bio_key
 from google.appengine.ext import db
@@ -44,6 +45,11 @@ class MainTest(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_user_stub()
+
+    def format_datetimeTest(self):
+        actual = format_datetime(self.toDate(2010,10,14),format='short')
+        expected = "14/10/2010"
+        assert expected == actual
 
     def AuthCheck_checkUserTest(self):
         ac = AuthCheck()
@@ -183,7 +189,9 @@ class MainTest(unittest.TestCase):
         Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
         handler.get(sd='2010-10-10',ed='2010-10-12',user=currUser.nickname())
+
     def toDate(self,y,m,d):
+
         return dt.date(y,m,d)
 
     def EntryWeekHandler_getTest(self):
@@ -193,6 +201,7 @@ class MainTest(unittest.TestCase):
         handler = EntryWeekHandler()
         handler.initialize(request, response)
         handler.get(user=currUser.nickname())
+
         Entry(weight=100.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
@@ -219,6 +228,7 @@ class MainTest(unittest.TestCase):
         self.EntryHandler_postTest()
         self.EntryDetail_getTest()
         self.AuthCheck_checkUserTest()
+        self.format_datetimeTest()
 
     def tearDown(self):
         self.logoutCurrentUser()
