@@ -248,11 +248,16 @@ class MainTest(unittest.TestCase):
     def BMICheck_updateBMITest(self):
         b = BMICheck()
         currUser=users.get_current_user()
+        request = webapp2.Request.blank('/')
+        response = webapp2.Response()
+        handler = UserOverviewHandler()
+        handler.initialize(request, response)
+
         Entry(weight=100.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=110.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=115.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
-        Biometric(height=100, target=75.0, parent=bio_key(currUser.user_id())).put()
-        b.updateBMI(self,user=currUser)
+        Biometric(height=100, target=78.0,user=currUser, parent=bio_key(currUser.user_id())).put()
+        handler.get(user=currUser.nickname())
 
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')
