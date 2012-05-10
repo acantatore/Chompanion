@@ -7,6 +7,7 @@ from main import EntryListHandler
 from main import DetailHandler
 from main import UserOverviewHandler
 from main import AuthCheck
+from main import EntryWeekHandler
 from model import Entry,log_key
 from model import Biometric,bio_key
 from google.appengine.ext import db
@@ -185,6 +186,17 @@ class MainTest(unittest.TestCase):
     def toDate(self,y,m,d):
         return dt.date(y,m,d)
 
+    def EntryWeekHandler_getTest(self):
+        request = webapp2.Request.blank('/')
+        response = webapp2.Response()
+        currUser=users.get_current_user()
+        handler = EntryWeekHandler()
+        handler.initialize(request, response)
+        handler.get(user=currUser.nickname())
+        Entry(weight=100.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
+        handler.get(user=currUser.nickname())
 
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')
@@ -202,6 +214,7 @@ class MainTest(unittest.TestCase):
         self.UserOverviewHandler_postTest()
         self.UserOverviewHandler_validateUserBiometricsTest()
         self.EntryListHandler_getTest()
+        self.EntryWeekHandler_getTest()
         self.EntryHandler_getTest()
         self.EntryHandler_postTest()
         self.EntryDetail_getTest()
