@@ -9,7 +9,8 @@ from main import UserOverviewHandler
 from main import AuthCheck
 from main import EntryWeekHandler
 from main import format_datetime
-from main import EntriesValidations,ValidationFactory,Validation
+from main import BMICheck
+from main import EntriesValidations,ValidationFactory,Validation,Query,QueryFactory
 from model import Entry,log_key
 from model import Biometric,bio_key
 from google.appengine.ext import db
@@ -66,7 +67,6 @@ class MainTest(unittest.TestCase):
         actual=ValidationFactory().newValidation("entries").validateVariance(10.5)
         expected=10.5
         assert actual == expected
-
         actual=ValidationFactory().newValidation("biometrics").validateTarget(None)
         expected=0.0
         assert actual == expected
@@ -79,6 +79,15 @@ class MainTest(unittest.TestCase):
         actual=ValidationFactory().newValidation("biometrics").validateHeight(10)
         expected=10
         assert actual == expected
+        v=Validation()
+        actual=v.getValidation()
+        expected=0
+        assert actual == expected
+        q=Query()
+        actual=q.getQuery()
+        expected=0
+        assert actual == expected
+        #TODO: Test para las excepciones
 
     def AuthCheck_checkUserTest(self):
         ac = AuthCheck()
@@ -236,6 +245,15 @@ class MainTest(unittest.TestCase):
         Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
         handler.get(user=currUser.nickname())
 
+    def BMICheck_updateBMITest(self):
+        b = BMICheck()
+        currUser=users.get_current_user()
+        Entry(weight=100.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=110.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=115.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
+        Biometric(height=100, target=75.0, parent=bio_key(currUser.user_id())).put()
+        b.updateBMI(self,user=currUser)
+
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')
         response = webapp2.Response()
@@ -259,6 +277,7 @@ class MainTest(unittest.TestCase):
         self.AuthCheck_checkUserTest()
         self.format_datetimeTest()
         self.EntriesValidations_validationsTest()
+        self.BMICheck_updateBMITest()
 
     def tearDown(self):
         self.logoutCurrentUser()
