@@ -57,38 +57,42 @@ class MainTest(unittest.TestCase):
 
         actual=ValidationFactory().newValidation("entries").validateWeight(None)
         expected=0.0
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("entries").validateWeight(10.5)
         expected=10.5
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("entries").validateVariance(None)
         expected=0.0
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("entries").validateVariance(10.5)
         expected=10.5
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("biometrics").validateTarget(None)
         expected=0.0
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("biometrics").validateTarget(10.5)
         expected=10.5
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("biometrics").validateHeight(None)
         expected=0.0
-        assert actual == expected
+        self.assertEquals(actual,expected)
         actual=ValidationFactory().newValidation("biometrics").validateHeight(10)
         expected=10
-        assert actual == expected
+        self.assertEquals(actual,expected)
         v=Validation()
         actual=v.getValidation()
         expected=0
-        assert actual == expected
+        self.assertEquals(actual,expected)
         q=Query()
         actual=q.getQuery()
         expected=0
-        assert actual == expected
+        self.assertEquals(actual,expected)
+        actual=q.containsQueryType("test")
+        expected=False
+        self.assertEquals(actual,expected)
         #TODO: Test para las excepciones
-
+        self.assertRaises(ValueError,ValidationFactory().newValidation,('bio'))
+        self.assertRaises(ValueError,QueryFactory().newQuery,('bio'))
     def AuthCheck_checkUserTest(self):
         ac = AuthCheck()
         actual=ac.checkUser(None)
@@ -208,6 +212,9 @@ class MainTest(unittest.TestCase):
         handler.post(user=nick,cd='2012-10-10')
         Entry(weight=100.0, variance=5.0,date=currDt,user=currUser, parent=log_key(userId)).put()
         handler.post(user=nick,cd='2012-10-10')
+        db.delete(Biometric.all())
+        Biometric(height=150, target=73.3, parent=bio_key(currUser.user_id())).put()
+        handler.post(user=nick,cd='2012-10-10')
         #Put Test
         handler.put(user=nick,cd='2012-10-10')
         handler.put(user=nick,cd='2012-10-15')
@@ -259,6 +266,7 @@ class MainTest(unittest.TestCase):
         Entry(weight=0.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
 
         b.updateBMI(self,currUser.nickname())
+
 
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')
