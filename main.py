@@ -270,7 +270,7 @@ class UserOverviewHandler(webapp2.RequestHandler):
         b.target = target
         if weight and height > 0:
             bmi=Decimal((weight) / (height/100.0)**2.0).quantize(Decimal('.01'),rounding=ROUND_UP)
-            e.bmi = float(bmi)
+            b.bmi = float(bmi)
         else:
             b.bmi = 0.00
         b.put()
@@ -322,8 +322,9 @@ class EntryHandler(webapp2.RequestHandler):
         if self.isAuthenticated(user,cd):
             values = self.getPostValues(cd)
             eq = QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
+            bq= QueryFactory().newQuery("biometrics").getUser(values['userid'])
             if eq.count(1) == 1:
-                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'])
+                self.validateUserEntry(eq,values['weight'],values['variance'],values['date'],bq[0].height)
     #PAtron Factory para los queryhandlers
     def delete(self,user,cd):
         if self.isAuthenticated(user,cd):
