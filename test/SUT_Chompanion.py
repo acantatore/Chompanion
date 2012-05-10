@@ -9,6 +9,7 @@ from main import UserOverviewHandler
 from main import AuthCheck
 from main import EntryWeekHandler
 from main import format_datetime
+from main import EntriesValidations,ValidationFactory,Validation
 from model import Entry,log_key
 from model import Biometric,bio_key
 from google.appengine.ext import db
@@ -50,6 +51,34 @@ class MainTest(unittest.TestCase):
         actual = format_datetime(self.toDate(2010,10,14),format='short')
         expected = "14/10/2010"
         assert expected == actual
+
+    def EntriesValidations_validationsTest(self):
+
+        actual=ValidationFactory().newValidation("entries").validateWeight(None)
+        expected=0.0
+        assert actual == expected
+        actual=ValidationFactory().newValidation("entries").validateWeight(10.5)
+        expected=10.5
+        assert actual == expected
+        actual=ValidationFactory().newValidation("entries").validateVariance(None)
+        expected=0.0
+        assert actual == expected
+        actual=ValidationFactory().newValidation("entries").validateVariance(10.5)
+        expected=10.5
+        assert actual == expected
+
+        actual=ValidationFactory().newValidation("biometrics").validateTarget(None)
+        expected=0.0
+        assert actual == expected
+        actual=ValidationFactory().newValidation("biometrics").validateTarget(10.5)
+        expected=10.5
+        assert actual == expected
+        actual=ValidationFactory().newValidation("biometrics").validateHeight(None)
+        expected=0.0
+        assert actual == expected
+        actual=ValidationFactory().newValidation("biometrics").validateHeight(10)
+        expected=10
+        assert actual == expected
 
     def AuthCheck_checkUserTest(self):
         ac = AuthCheck()
@@ -229,6 +258,7 @@ class MainTest(unittest.TestCase):
         self.EntryDetail_getTest()
         self.AuthCheck_checkUserTest()
         self.format_datetimeTest()
+        self.EntriesValidations_validationsTest()
 
     def tearDown(self):
         self.logoutCurrentUser()
