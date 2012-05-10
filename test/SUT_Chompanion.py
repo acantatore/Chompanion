@@ -239,7 +239,6 @@ class MainTest(unittest.TestCase):
         handler = EntryWeekHandler()
         handler.initialize(request, response)
         handler.get(user=currUser.nickname())
-
         Entry(weight=100.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
@@ -252,12 +251,14 @@ class MainTest(unittest.TestCase):
         response = webapp2.Response()
         handler = UserOverviewHandler()
         handler.initialize(request, response)
-
+        db.delete(Biometric.all())
+        self.setCurrentUser("adc@adc.com", "aaaaaaa")
+        Biometric(height=150, target=73.3, parent=bio_key(currUser.user_id())).put()
         Entry(weight=100.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=110.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
-        Entry(weight=115.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
-        Biometric(height=100, target=78.0,user=currUser, parent=bio_key(currUser.user_id())).put()
-        handler.get(user=currUser.nickname())
+        Entry(weight=0.0,bmi=0.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
+
+        b.updateBMI(self,currUser.nickname())
 
     def EntryDetail_getTest(self):
         request = webapp2.Request.blank('/')
