@@ -10,7 +10,8 @@ from main import AuthCheck
 from main import EntryWeekHandler
 from main import format_datetime
 from main import BMICheck
-from main import EntriesValidations,ValidationFactory,Validation,Query,QueryFactory
+from main import ValidationFactory,Validation,Query,QueryFactory
+from main import EntryAllEntriesHandler
 from model import Entry,log_key
 from model import Biometric,bio_key
 from google.appengine.ext import db
@@ -90,7 +91,6 @@ class MainTest(unittest.TestCase):
         actual=q.containsQueryType("test")
         expected=False
         self.assertEquals(actual,expected)
-        #TODO: Test para las excepciones
         self.assertRaises(ValueError,ValidationFactory().newValidation,('bio'))
         self.assertRaises(ValueError,QueryFactory().newQuery,('bio'))
     def AuthCheck_checkUserTest(self):
@@ -234,6 +234,19 @@ class MainTest(unittest.TestCase):
         Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
         Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
         handler.get(sd='2010-10-10',ed='2010-10-12',user=currUser.nickname())
+    def EntryAllEntriesHandler_getTest(self):
+        request = webapp2.Request.blank('/')
+        response = webapp2.Response()
+        currUser=users.get_current_user()
+        handler = EntryAllEntriesHandler()
+        handler.initialize(request, response)
+        handler.get(user=currUser.nickname())
+        self.setCurrentUser("adc@adc.com", "aaaaaaa")
+        handler.get(user=currUser.nickname())
+        Entry(weight=100.0, variance=5.0,date=self.toDate(2010,10,10),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=110.0, variance=5.0,date=self.toDate(2010,10,11),user=currUser, parent=log_key(currUser.user_id())).put()
+        Entry(weight=115.0, variance=5.0,date=self.toDate(2010,10,12),user=currUser, parent=log_key(currUser.user_id())).put()
+        handler.get(user=currUser.nickname())
 
     def toDate(self,y,m,d):
 
@@ -292,6 +305,7 @@ class MainTest(unittest.TestCase):
         self.format_datetimeTest()
         self.EntriesValidations_validationsTest()
         self.BMICheck_updateBMITest()
+        self.EntryAllEntriesHandler_getTest()
 
     def tearDown(self):
         self.logoutCurrentUser()
