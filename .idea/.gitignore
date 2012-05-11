@@ -1,3 +1,6 @@
 *.iml
 *.xml
-./inspectionProfiles/*.xml
+./inspectionProfiles/*
+./jsLinters/*
+./libraries/*
+./scopes/*
