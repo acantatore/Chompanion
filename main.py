@@ -195,12 +195,13 @@ class RootHandler(webapp2.RequestHandler):
     """ This is the entry point class for Chompanion, handles the template construction
         get()
     """
+
     def get(self):
         """ This is the entry point method for Chompanion. The path is "/"
         """
         self.response.out.write(self.createTemplate(users.get_current_user(), self.request.uri))
 
-    def createTemplate(self, currentUser, uri):
+    def createTemplate(self,currentUser, uri):
         if currentUser:
             userid=users.get_current_user().user_id()
             template = jinja_environment.get_template('/template/Log.html')
@@ -217,7 +218,9 @@ class RootHandler(webapp2.RequestHandler):
 
     def buildTemplate(self,userId,uri):
         bq = QueryFactory().newQuery("biometrics").getUser(userId)
-        eq = QueryFactory().newQuery("entries").getEntrybyDateDesc(userId)
+        if bq.count() == 0:
+            UserOverviewHandler.loadBiometrics(QueryFactory().newQuery("biometrics").createUser(userId),None,None,None)
+
         url = users.create_logout_url(uri)
         url_linktext = 'Logout'
         nick = users.get_current_user().nickname()
@@ -240,6 +243,7 @@ class RootHandler(webapp2.RequestHandler):
         return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
+
     """ This handles the main screen and User Bio Data updates
         get()
         put()
@@ -277,10 +281,13 @@ class UserOverviewHandler(webapp2.RequestHandler):
         for b in bq:
             self.loadBiometrics(b,height,target,weight)
 
-    def loadBiometrics(self,b,height,target,weight):
+    @staticmethod
+    def loadBiometrics(b,height,target,weight):
         b.user = users.get_current_user()
-        b.height = height
-        b.target = target
+        if height>0:
+            b.height = height
+        if target>0:
+            b.target = target
         if weight and height > 0:
             bmi=Decimal((weight) / (height/100.0)**2.0).quantize(Decimal('.01'),rounding=ROUND_UP)
             b.bmi = float(bmi)

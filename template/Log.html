@@ -167,10 +167,15 @@
         jQuery.extend({
             renderBioData:function(){
                 var results = $.getValues("http://localhost:8080/users/{{ nick }}/");
+                if (results[0].target){
                 $('body').data('target',results[0].target);
+                $('#in_obj').val($('body').data('target'))
+                }
+                if (results[0].height){
                 $('body').data('height',results[0].height);
                 $('#in_alt').val($('body').data('height'));
-                $('#in_obj').val($('body').data('target'))
+                }
+
             }
         });
     </script>
