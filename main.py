@@ -141,6 +141,11 @@ class EntryQueries(Query):
         rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
         return rset
 
+    def getAllEntries(self,key):
+        rset = self.entryRsetBuilder(key)
+        rset.order("-date")
+        return rset
+
 class QueryFactory(object):
     @staticmethod
     def newQuery(queryType):
@@ -379,7 +384,15 @@ class EntryWeekHandler(webapp2.RequestHandler):
                         QueryFactory.newQuery("entries").getEntryWeek(users.get_current_user().user_id())
                     )
                 )
-
+class EntryAllEntriesHandler(webapp2.RequestHandler):
+    def get(self,user):
+        ac = AuthCheck()
+        if user and ac.checkUser(user):
+            self.response.write(
+                jsonBuilder.encodeResponse(
+                QueryFactory.newQuery("entries").getAllEntries(users.get_current_user().user_id())
+            )
+            )
 
 class DetailHandler(webapp2.RequestHandler):
     def get(self,user,date):
@@ -400,6 +413,7 @@ app = webapp2.WSGIApplication([
         webapp2.Route('/entry-week', EntryWeekHandler, 'entry-week'),
         webapp2.Route('/entry/<cd:.+>', EntryHandler, 'entry'),
         webapp2.Route('/entry/<date:(\d{4})-(\d{2})-(\d{2})>/detail', DetailHandler, 'detail'),
+        webapp2.Route('/entries', EntryAllEntriesHandler, 'entry-all')
         ]),
      ])
 

@@ -25,6 +25,7 @@
     <script type="text/javascript" src="/static/jsrender.min.js"></script>
     <script type="text/javascript" src="/static/jquery.views.min.js"></script>
     <script type="text/javascript" src="/static/jquery.observable.min.js"></script>
+
     <!-- ReST Put & Delete Methods Extensions for jQuery -->
     <script type="text/javascript">
         function _ajax_request(url, data, callback, type, method) {
@@ -83,7 +84,21 @@
             }
         });
     </script>
-    <!-- hacer una sola llamada a entry week -->
+
+
+    <script type="text/javascript" charset="utf-8">
+        jQuery.extend({
+            renderallEntries:function(){
+                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entries");
+                if (results)
+                { //noinspection JSUnresolvedFunction
+                    $("#alist").html($("#allEntriesTemplate").render(results.reverse()));
+                }
+                var slider = new Swipe(document.getElementById('slider'));
+            }
+
+        });
+    </script>
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderEntryList:function(){
@@ -188,7 +203,21 @@
         <ul id="myListExt" style="list-style:none;margin-left: 0;">
             <li>
                 <div class="main_content">
-                    <!--TODO: Insertar nuevo template-->
+                    <ul>
+                        <script id="allEntriesTemplate" type="text/x-jsrender">
+                            <li>
+                                {% raw %}
+                                {{:weight}}|{{:date}}|Detalle|Borrar
+                                {% endraw %}
+                            </li>
+                        </script>
+                    </ul>
+                    <div id="alist"></div>
+                    <script type="text/javascript">
+                    $.renderallEntries();
+                    </script>
+                    <a href='#' onclick='slider.prev();return false;'>prev</a>
+                    <a href='#' onclick='slider.next();return false;'>next</a>
                 </div>
             </li>
         </ul>
@@ -221,7 +250,9 @@
             </div>
         </script>
         <div id="elist"></div>
-        <script type="text/javascript">$.renderEntryList();</script>
+        <script type="text/javascript">
+            $.renderEntryList();
+        </script>
         <div class="grid_1 omega"><p></p></div>
     </div>
     <div class="clear"></div>
@@ -262,6 +293,7 @@
                         url = $form.attr( 'action' );
                 var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
                 $.post( url+currdt,{ date: date, weight:weight, variance:variance });
+                $.renderallEntries();
                 $.renderEntryList();
                 $.drawChart();
                 //noinspection JSUnresolvedFunction
