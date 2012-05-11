@@ -15,17 +15,19 @@ div.header{
 }
 div.switcher{
     background-color: #3D2423;
-    height: 40px;
+    height: 30px;
     color: #fffbce;
-    padding-top: 10px;
+    padding-top: 5px;
     text-align: center;
     font-family:  "oleo script";
-    font-size: 1.3em;
-
+    font-size: 1.2em;
     font-variant-caps: all-small-caps;
 }
 div.entries{
     background-color: #DB9E46;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
 }
 div.gravatar{
     border-style:solid;
@@ -71,13 +73,19 @@ div.h_bgr{
     background-repeat: repeat-x;
 }
 #wrapper li{
-    height:300px;
-    line-height:300px;
+    height:290px;
+    line-height:290px;
 
 }
 
 div.ending{
-
+color: #25706B;
+background-color: #3D2423;
+    padding: 5px;
+height: 20px;
+font-family: "oxygen";
+font-size: 0.6em;
+text-align: center;
 }
 body{
     background-color: #D6C274    ;
@@ -129,51 +137,58 @@ background-repeat:  no-repeat;
 
 div.data{
     width: 100%;
-    background-image: url("/static/data_bgr.png");
-    background-repeat:  no-repeat;
+    /*background-image: url("/static/data_bgr.png");*/
+    /*background-repeat:  no-repeat;*/
     height:100%;
     text-align: center;
     line-height: 50%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-color: #000000;
+    background-color: #FFFFFF;
+    border-style: solid;
 
 }
 div.bottom{
 
 
-    line-height: 20%;
+    text-align: center;
+    line-height: 90%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-color: #000000;
+    background-color: #FFFFFF;
+    border-style: solid;
+    font-size: 0.9em;
+    font-family: "oxygen";
 }
 
 div.bottom p{
     text-align: center;
 }
 
-div.bottom#alt{
-    background-image: url("/static/alt_bgr.png");
-}
-div.bottom#obj{
-    background-image: url("/static/obj_bgr.png");
-}
-div.bottom#pes{
 
-    background-image: url("/static/pes_bgr.png");
-}
-div.bottom#dat{
-    background-image: url("/static/fec_bgr.png");
-}
-div.bottom input:hover{
-    background-color: #f7e4b0;
-}
-div.bottom button {
-    background-color: #c3c3c3
-}
-div.bottom button:hover
+input.logbutton
 {
-    background-color: #f7e4b0
+    font-size:1.8em;
+    font-family: "Oleo Script";
+    color:#fffbce;
+    width:80px;
+    height:40px;
+    background-color:#AB362E;
+    border-style:solid;
+    border-color:#fffbce;
 }
+
 div.bottom input{
     background-color: #ffffff;
     border: 1px solid #c3c3c3;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 1.0em;
     font-family: "oxygen";
     width: 6em;
 }

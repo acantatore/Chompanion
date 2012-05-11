@@ -215,10 +215,10 @@
 
         <div  class="grid_16 main">
                 <ul id="myList" style="list-style:none;margin-left: 0px;" >
-                    <li><div id="chart1" style="height:300px; width: 860px; "></div></li>
+                    <li><div id="chart1" style="height:290px; width: 860px; "></div></li>
                 </ul>
                 <ul id="myListExt" style="list-style:none;margin-left: 0px;">
-                    <li><div id="tabs-2"><img src="/static/PlaceholderST.jpg"  height="300" width="860"></div></li>
+                    <li><div id="tabs-2"><img src="/static/PlaceholderST.jpg"  height="290" width="860"></div></li>
                 </ul>
             <!-- TODO:Reemplazar la lógica por JQuery-->
 
@@ -240,13 +240,13 @@
     </script>
     <div class="clear"></div>
     <div class="grid_16 header switcher">
-        <a href="#" id="myList-toggle">More...</a>
+        <a href="#"style="color: #fffbce;" id="myList-toggle">More...</a>
     </div>
     <div class="clear"></div>
     <div class="grid_16 entries">
-        <div class="grid_1 alpha" style="background-color: #ffd700;"><p></p></div>
+        <div class="grid_1 alpha"><p></p></div>
     <script id="entryListTemplate" type="text/x-jsrender">
-        <div class="grid_2 data" style="background-color: #aad376">
+        <div class="grid_2 data">
             {% raw %}
             <h3>{{:weight}}</h3>
             <p>{{:date}}</p>
@@ -260,16 +260,15 @@
         </script>
 
 
-        <div class="grid_1 omega" style="background-color: #ffd700"><p></p></div>
+        <div class="grid_1 omega"><p></p></div>
     </div>
         <div class="clear"></div>
-        <div class="grid_16 ending" style="background-color: #aad376"></div>
-        <div class="clear"></div>
 
-            <div class="grid_2 "><p></p></div>
+<div class="grid_16 entries">
+            <div class="grid_3 alpha"><p></p></div>
         <form action="/users/{{ nick }}/" id="bioPost" name="bioPost">
-            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value=""></p></div>
-            <div class="grid_2 bottom" id="obj"><p><input class="required" id="in_obj" type="text" name="target" value=""></p></div>
+            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value="">Altura</p></div>
+            <div class="grid_2 bottom" id="obj"><p><input class="required" id="in_obj" type="text" name="target" value="">Objetivo</p></div>
         </form>
     <script>
         $("#bioPost input[name=target]").change(function() {
@@ -286,9 +285,9 @@
             });
         </script>
         <form action="/users/{{ nick }}/entry/"id="entryPost">
-            <div class="grid_2 bottom" id="pes"><p><input id=in_wei value="" name="weight"></p></div>
-            <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"></p></div>
-            <div class="grid_2 bottom"><p><input type="submit" value="Log"></p></div>
+            <div class="grid_2 bottom" id="pes"><p><input id=in_wei value="" name="weight">Peso</p></div>
+            <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date">Fecha</p></div>
+            <div class="grid_2"><p><input class="logbutton" type="submit" value="Log"></p></div>
         </form>
         <script>
             $("#entryPost").submit(function(event) {
@@ -307,8 +306,9 @@
                 $("#in_wei").effect("highlight", {}, 1500);
             });
         </script>
-            <div class="grid_2 "><p></p></div>
-            <div class="grid_16 ending"></div>
+            <div class="grid_3 omega "><p></p></div>
+</div>
+            <div class="grid_16 ending">Chompanion - Alejandro Cantatore - twitter.com/cthulhu_ar </div>
 
 </div>
 </body>
