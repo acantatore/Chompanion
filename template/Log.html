@@ -113,7 +113,6 @@
 
                 s1 = [line]
                 plot1 = $.jqplot('chart1', s1, {
-                    title:'Default Date Axis',
                     axes:{
                         xaxis:{
                             renderer:$.jqplot.DateAxisRenderer,
@@ -152,44 +151,36 @@
             }
         });
     </script>
-    <script type="text/javascript">
+    <script type="text/javascript" charset="utf-8">
+        jQuery.extend({
+            reloadGraph:function(){
+                var line = [];
+                $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){
+                    $.each(data,function(index){
+                        line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
 
-        var myScroll;
-        function loaded() {
-            myScroll = new iScroll('wrapper');
-        }
+                    });
 
-        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+                    $.jqplot.config.enablePlugins = true;
 
-        /* * * * * * * *
-         *
-         * Use this for high compatibility (iDevice + Android)
-         *
-         */
-        document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); }, false);
-        /*
-         * * * * * * * */
+                    s1 = [line]
+                    plot1 = $.jqplot('chart1', s1, {
+                        axes:{
+                            xaxis:{
+                                renderer:$.jqplot.DateAxisRenderer,
+                                tickOptions:{
+                                    formatString:'%#d/%#m'
+                                },
+                                numberTicks:9
+                            }
 
+                        },
+                        series:[{lineWidth:5, markerOptions:{style:'circle'}}]
+                    }).replot();
+                });
 
-        /* * * * * * * *
-         *
-         * Use this for iDevice only
-         *
-         */
-        //document.addEventListener('DOMContentLoaded', loaded, false);
-        /*
-         * * * * * * * */
-
-
-        /* * * * * * * *
-         *
-         * Use this if nothing else works
-         *
-         */
-        //window.addEventListener('load', setTimeout(function () { loaded(); }, 200), false);
-        /*
-         * * * * * * * */
-
+            }
+        })
     </script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
@@ -209,13 +200,13 @@
         {{ nick }}
     </div>
     <div class="grid_1 header"><img src="{{ gurl }}" alt=""></div>
-    <div class="grid_2 omega logout"><a style="color: #fffbce;"   href="{{ url }}">{{ url_linktext }}</a></div>
+    <div class="grid_2 omega logout"><a style="color: #fffbce; text-decoration: none;"   href="{{ url }}">{{ url_linktext }}</a></div>
     </div>
     <div class="clear"></div>
 
         <div  class="grid_16 main">
                 <ul id="myList" style="list-style:none;margin-left: 0px;" >
-                    <li><div id="chart1" style="height:290px; width: 860px; "></div></li>
+                    <li><div style="height:290px; width: 860px;"><div id="chart1"></div></div></li>
                 </ul>
                 <ul id="myListExt" style="list-style:none;margin-left: 0px;">
                     <li><div id="tabs-2"><img src="/static/PlaceholderST.jpg"  height="290" width="860"></div></li>
@@ -240,7 +231,7 @@
     </script>
     <div class="clear"></div>
     <div class="grid_16 header switcher">
-        <a href="#"style="color: #fffbce;" id="myList-toggle">More...</a>
+        <a href="#"style="color: #fffbce;text-decoration: none;" id="myList-toggle">More...</a>
     </div>
     <div class="clear"></div>
     <div class="grid_16 entries">
@@ -302,13 +293,13 @@
 
 
                 $.renderEntryList();
-                $.drawChart();
+                $.reloadGraph();
                 $("#in_wei").effect("highlight", {}, 1500);
             });
         </script>
             <div class="grid_3 omega "><p></p></div>
 </div>
-            <div class="grid_16 ending">Chompanion - Alejandro Cantatore - twitter.com/cthulhu_ar </div>
+            <div class="grid_16 ending"> Alejandro Cantatore - twitter.com/cthulhu_ar </div>
 
 </div>
 </body>
