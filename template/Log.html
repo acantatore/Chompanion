@@ -13,6 +13,8 @@
     <script type="text/javascript" src="/static/jquery.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/jquery.validate.min.js"></script>
+    <!-- swipe -->
+    <script type="text/javascript" src="/static/iscroll.js"></script>
     <!-- jQplot -->
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
@@ -150,6 +152,45 @@
             }
         });
     </script>
+    <script type="text/javascript">
+
+        var myScroll;
+        function loaded() {
+            myScroll = new iScroll('wrapper');
+        }
+
+        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+        /* * * * * * * *
+         *
+         * Use this for high compatibility (iDevice + Android)
+         *
+         */
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); }, false);
+        /*
+         * * * * * * * */
+
+
+        /* * * * * * * *
+         *
+         * Use this for iDevice only
+         *
+         */
+        //document.addEventListener('DOMContentLoaded', loaded, false);
+        /*
+         * * * * * * * */
+
+
+        /* * * * * * * *
+         *
+         * Use this if nothing else works
+         *
+         */
+        //window.addEventListener('load', setTimeout(function () { loaded(); }, 200), false);
+        /*
+         * * * * * * * */
+
+    </script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
             $.drawChart();
@@ -161,27 +202,51 @@
 </head>
 <body>
 <div class="container_16">
-    <div class="grid_16 header">
-        CHOMPanion | <b>{{ nick }} | </b><a href="{{ url }}">{{ url_linktext }}</a>
+    <div class="grid_16 rounded-corners header">
+    <div class="grid_3 header alpha rounded-corners title "><b>CHOMPanion</b></div>
+    <div class="grid_6 header"></div>
+    <div class="grid_4 header nickname">
+        {{ nick }}
     </div>
-
+    <div class="grid_1 header"><img src="{{ gurl }}" alt=""></div>
+    <div class="grid_2 omega logout"><a style="color: #fffbce;"   href="{{ url }}">{{ url_linktext }}</a></div>
+    </div>
     <div class="clear"></div>
-        <div id="tabs" class="grid_16 header">
 
-            <div id="username">
-                <ul>
-                    <li><a href="#chart1">Grafico</a></li>
-                    <li><a href="#tabs-2">Estadisticas</a></li>
+        <div  class="grid_16 main">
+                <ul id="myList" style="list-style:none;margin-left: 0px;" >
+                    <li><div id="chart1" style="height:300px; width: 860px; "></div></li>
+                </ul>
+                <ul id="myListExt" style="list-style:none;margin-left: 0px;">
+                    <li><div id="tabs-2"><img src="/static/PlaceholderST.jpg"  height="300" width="860"></div></li>
                 </ul>
             <!-- TODO:Reemplazar la lógica por JQuery-->
-                    <p><div id="chart1" style="height:300px;width:900px; "></div></p>
-                    <p><div id="tabs-2"><img src="/static/PlaceholderST.jpg" width="900" height="300"></div></p>
-            </div>
+
+
+
         </div>
-        <div class="clear"></div>
-        <div class="grid_1"><p></p></div>
+    <script type="text/javascript">
+    $(document).ready(function(){
+    var list2 = $('#myListExt');
+    var list1 = $('#myList');
+    list2.hide();
+    list1.show();
+    $('a#myList-toggle').click(function() {
+    list1.slideToggle(300,'easeInExpo');
+    list2.slideToggle(300,'easeInExpo');
+    return false;
+    });
+    });
+    </script>
+    <div class="clear"></div>
+    <div class="grid_16 header switcher">
+        <a href="#" id="myList-toggle">More...</a>
+    </div>
+    <div class="clear"></div>
+    <div class="grid_16 entries">
+        <div class="grid_1 alpha" style="background-color: #ffd700;"><p></p></div>
     <script id="entryListTemplate" type="text/x-jsrender">
-        <div class="grid_2 data">
+        <div class="grid_2 data" style="background-color: #aad376">
             {% raw %}
             <h3>{{:weight}}</h3>
             <p>{{:date}}</p>
@@ -195,9 +260,10 @@
         </script>
 
 
-        <div class="grid_1"><p></p></div>
+        <div class="grid_1 omega" style="background-color: #ffd700"><p></p></div>
+    </div>
         <div class="clear"></div>
-        <div class="grid_16 ending"></div>
+        <div class="grid_16 ending" style="background-color: #aad376"></div>
         <div class="clear"></div>
 
             <div class="grid_2 "><p></p></div>

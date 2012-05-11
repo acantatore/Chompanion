@@ -1,6 +1,6 @@
 from types import TypeType
 from decimal import *
-import urllib
+import urllib,hashlib
 import datetime as dt
 from datetime import timedelta
 from operator import attrgetter
@@ -216,10 +216,18 @@ class RootHandler(webapp2.RequestHandler):
         url = users.create_logout_url(uri)
         url_linktext = 'Logout'
         nick = users.get_current_user().nickname()
+        # Set your variables here
+        email = users.get_current_user().email()
+        default = "/static/noavatar.jpg"
+        size = 40
 
+        # construct the url
+        gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+        gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
         template_values = {
             'uid':userId,
             'nick': nick,
+            'gurl': gravatar_url,
             'url': url,
             'url_linktext': url_linktext,
             }
