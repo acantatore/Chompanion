@@ -223,12 +223,12 @@ class RootHandler(webapp2.RequestHandler):
         nick = users.get_current_user().nickname()
         # Set your variables here
         email = users.get_current_user().email()
-        default = "/static/noavatar.jpg"
+
         size = 40
 
         # construct the url
         gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
-        gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
+        gravatar_url += urllib.urlencode({'d':'retro', 's':str(size)})
         template_values = {
             'uid':userId,
             'nick': nick,
