@@ -13,8 +13,6 @@
     <script type="text/javascript" src="/static/jquery.min.js"></script>
     <script type="text/javascript" src="/static/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/jquery.validate.min.js"></script>
-    <!-- swipe -->
-    <script type="text/javascript" src="/static/iscroll.js"></script>
     <!-- jQplot -->
     <script type="text/javascript" src="/static/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="/static/plugins/jqplot.dateAxisRenderer.min.js"></script>
@@ -27,7 +25,6 @@
     <script type="text/javascript" src="/static/jsrender.js"></script>
     <script type="text/javascript" src="/static/jquery.views.js"></script>
     <script type="text/javascript" src="/static/jquery.observable.js"></script>
-
     <!-- ReST Put & Delete Methods Extensions for jQuery -->
     <script type="text/javascript">
         function _ajax_request(url, data, callback, type, method) {
@@ -43,7 +40,6 @@
                 dataType: type
             });
         }
-
         jQuery.extend({
             put: function(url, data, callback, type) {
                 return _ajax_request(url, data, callback, type, 'PUT');
@@ -53,22 +49,23 @@
             }
         });
     </script>
-<!-- Date Picker Formatter -->
+    <!-- Date Picker Formatter -->
     <script type="text/javascript" charset="utf-8">
         $(function () {
             var pickerOpts = {
                 dateFormat:"dd/mm/yy"
             };
+            //noinspection JSUnresolvedFunction
             $("#datepicker").datepicker(pickerOpts);
         });
     </script>
-<!-- jQueryUI Tabs component -->
+    <!-- jQueryUI Tabs component -->
     <script type="text/javascript" charset="utf-8">
         $(function() {
+            //noinspection JSUnresolvedFunction
             $( "#tabs" ).tabs();
         });
     </script>
-
     <script type="text/javascript">
         jQuery.extend({
             getValues: function(url) {
@@ -90,29 +87,40 @@
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderEntryList:function(){
-                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week")
-                $("#elist").html(
-                        $("#entryListTemplate").render(results.reverse())
-                );
-
-            }
+                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week");
+                if (results)
+                    { //noinspection JSUnresolvedFunction
+                        $("#elist").html($("#entryListTemplate").render(results.reverse()));
+                    }
+               }
         });
     </script>
     <script type="text/javascript" charset="utf-8">
-
         jQuery.extend({
             drawChart:function(){
-            var line = [];
-            $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){
-                $.each(data,function(index){
-                    line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
-
-                });
-
-                    $.jqplot.config.enablePlugins = true;
-
-                s1 = [line]
-                plot1 = $.jqplot('chart1', s1, {
+                var line = [];
+                $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){})
+                        .success(function(data) {
+                            $.each(data,function(index){
+                                line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
+                            });
+                        })
+                        .error(function() {
+                            var now = new Date();
+                            line.push([now,'0']);
+                        })
+                        .complete(function() {
+                            $.formatChart(line)
+                        });
+            }})
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        jQuery.extend({
+            formatChart:function(data){
+                //noinspection JSUnresolvedVariable
+                $.jqplot.config.enablePlugins = true;
+                var s1 = [data];
+                var plot1 = $.jqplot('chart1', s1, {
                     axes:{
                         xaxis:{
                             renderer:$.jqplot.DateAxisRenderer,
@@ -123,11 +131,12 @@
                         }
 
                     },
-                    series:[{lineWidth:5, markerOptions:{style:'circle'}}]
-                });
-        });
-            }})
-
+                    series:[
+                        {lineWidth:5, markerOptions:{style:'circle'}}
+                    ]
+                }).replot();
+            }
+        })
     </script>
     <script type="text/javascript">
         jQuery.extend({
@@ -137,8 +146,8 @@
                         target = $( '#bioPost input[name="target"]' ).val(),
                         url = "/users/{{ nick }}/";
                 $.post( url,{ height: height, target:target });
-        }
-                });
+            }
+        });
     </script>
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
@@ -152,133 +161,95 @@
         });
     </script>
     <script type="text/javascript" charset="utf-8">
-        jQuery.extend({
-            reloadGraph:function(){
-                var line = [];
-                $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){
-                    $.each(data,function(index){
-                        line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
-
-                    });
-
-                    $.jqplot.config.enablePlugins = true;
-
-                    s1 = [line]
-                    plot1 = $.jqplot('chart1', s1, {
-                        axes:{
-                            xaxis:{
-                                renderer:$.jqplot.DateAxisRenderer,
-                                tickOptions:{
-                                    formatString:'%#d/%#m'
-                                },
-                                numberTicks:9
-                            }
-
-                        },
-                        series:[{lineWidth:5, markerOptions:{style:'circle'}}]
-                    }).replot();
-                });
-
-            }
-        })
-    </script>
-    <script type="text/javascript" charset="utf-8">
         $(document).ready(function () {
             $.drawChart();
             $.renderBioData()
-
         });
     </script>
-
 </head>
 <body>
 <div class="container_16">
     <div class="grid_16 rounded-corners header">
-    <div class="grid_3 header alpha rounded-corners title "><b>CHOMPanion</b></div>
-    <div class="grid_6 header"></div>
-    <div class="grid_4 header nickname">
-        {{ nick }}
-    </div>
-    <div class="grid_1 header"><img src="{{ gurl }}" alt=""></div>
-    <div class="grid_2 omega logout"><a style="color: #fffbce; text-decoration: none;"   href="{{ url }}">{{ url_linktext }}</a></div>
+        <div class="grid_3 header alpha rounded-corners title ">CHOMPanion</div>
+        <div class="grid_6 header"></div>
+        <div class="grid_4 header nickname">{{ nick }}</div>
+        <div class="grid_1 header"><img src="{{ gurl }}" alt=""></div>
+        <div class="grid_2 omega logout"><a style="color: #fffbce;text-decoration: none;"href="{{ url }}">{{ url_linktext }}</a></div>
     </div>
     <div class="clear"></div>
-
-        <div  class="grid_16 main">
-                <ul id="myList" style="list-style:none;margin-left: 0px;" >
-                    <li><div style="height:290px; width: 860px;"><div id="chart1"></div></div></li>
-                </ul>
-                <ul id="myListExt" style="list-style:none;margin-left: 0px;">
-                    <!-- TODO: Reemplazar imagen con div moddeado-->
-                    <li><div id="tabs-2"><img src="/static/PlaceholderST.jpg"  height="290" width="860"></div></li>
-                </ul>
-            <!-- TODO:Reemplazar la lógica por JQuery-->
-
-
-
-        </div>
+    <div  class="grid_16 main">
+        <ul id="myList" style="list-style:none;margin-left: 0;" >
+            <li>
+                <div class="main_content">
+                    <div id="chart1"></div>
+                </div>
+            </li>
+        </ul>
+        <ul id="myListExt" style="list-style:none;margin-left: 0;">
+            <li>
+                <div class="main_content">
+                    <!--TODO: Insertar nuevo template-->
+                </div>
+            </li>
+        </ul>
+    </div>
     <script type="text/javascript">
-    $(document).ready(function(){
-    var list2 = $('#myListExt');
-    var list1 = $('#myList');
-    list2.hide();
-    list1.show();
-    $('a#myList-toggle').click(function() {
-    list1.slideToggle(300,'easeInExpo');
-    list2.slideToggle(300,'easeInExpo');
-    return false;
-    });
-    });
+        $(document).ready(function(){
+            var list2 = $('#myListExt');
+            var list1 = $('#myList');
+            list2.hide();
+            list1.show();
+            $('a#myList-toggle').click(function() {
+                list1.slideToggle(300,'easeInExpo');
+                list2.slideToggle(300,'easeInExpo');
+                return false;
+            });
+        });
     </script>
     <div class="clear"></div>
-    <div class="grid_16 header switcher">
-        <a href="#"style="color: #fffbce;text-decoration: none;" id="myList-toggle">More...</a>
-    </div>
+    <div class="grid_16 header switcher"><a href="#"style="color: #fffbce;text-decoration: none;" id="myList-toggle">More...</a></div>
     <div class="clear"></div>
     <div class="grid_16 entries">
         <div class="grid_1 alpha"><p></p></div>
-    <script id="entryListTemplate" type="text/x-jsrender">
-        <div class="grid_2 data">
-            {% raw %}
-            <h3>{{:weight}}</h3>
-            <p>{{:date}}</p>
-            <p class="pos" id="po">{{:variance}}|{{:bmi}}</p>
-            {% endraw %}
-        </div>
-    </script>
-    <div id="elist"></div>
-        <script type="text/javascript">
-            $.renderEntryList()
+        <script id="entryListTemplate" type="text/x-jsrender">
+            <div class="grid_2 data">
+                {% raw %}
+                <h3>{{:weight}}</h3>
+                <p>{{:date}}</p>
+                <p class="pos" id="po">{{:variance}}|{{:bmi}}</p>
+                {% endraw %}
+            </div>
         </script>
-
-
+        <div id="elist"></div>
+        <script type="text/javascript">$.renderEntryList();</script>
         <div class="grid_1 omega"><p></p></div>
     </div>
-        <div class="clear"></div>
-
-<div class="grid_16 entries">
-            <div class="grid_3 alpha"><p></p></div>
+    <div class="clear"></div>
+    <div class="grid_16 entries">
+        <div class="grid_3 alpha"><p></p></div>
         <form action="/users/{{ nick }}/" id="bioPost" name="bioPost">
-            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value="">Altura</p></div>
-            <div class="grid_2 bottom" id="obj"><p><input class="required" id="in_obj" type="text" name="target" value="">Objetivo</p></div>
+            <div class="grid_2 bottom" id="alt"><p><input id="in_alt" type="text"  name="height" value=""><label for="in_alt">Altura</label></p></div>
+            <div class="grid_2 bottom" id="obj"><p><input class="required" id="in_obj" type="text" name="target" value=""><label for="in_obj">Objetivo</label></p></div>
         </form>
-    <script>
-        $("#bioPost input[name=target]").change(function() {
-            event.preventDefault();
-            $.postBioData(this)
-            $("#in_obj").effect("highlight", {}, 1500);
-        });
-    </script>
+        <script>
+            $("#bioPost input[name=target]").change(function() {
+                event.preventDefault();
+                $.postBioData(this);
+                //noinspection JSUnresolvedFunction
+                $("#in_obj").effect("highlight", {}, 1500);
+            });
+        </script>
         <script>
             $("#bioPost input[name=height]").change(function() {
                 event.preventDefault();
                 $.postBioData(this);
+                //noinspection JSUnresolvedFunction
                 $("#in_alt").effect("highlight", {}, 1500);
             });
         </script>
         <form action="/users/{{ nick }}/entry/"id="entryPost">
-            <div class="grid_2 bottom" id="pes"><p><input id=in_wei value="" name="weight">Peso</p></div>
-            <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date">Fecha</p></div>
+            <div class="grid_2 bottom" id="pes"><p><input id=in_wei value="" name="weight"><label for="in_wei">Peso</label></p></div>
+            <div class="grid_2 bottom" id="dat"><p><input id="datepicker" type="text" name="date"><label for="datepicker">Fecha</label></p></div>
             <div class="grid_2"><p><input class="logbutton" type="submit" value="Log"></p></div>
         </form>
         <script>
@@ -291,17 +262,15 @@
                         url = $form.attr( 'action' );
                 var currdt=date.split('/')[2]+'-'+date.split('/')[1]+'-'+date.split('/')[0];
                 $.post( url+currdt,{ date: date, weight:weight, variance:variance });
-
-
                 $.renderEntryList();
-                $.reloadGraph();
+                $.drawChart();
+                //noinspection JSUnresolvedFunction
                 $("#in_wei").effect("highlight", {}, 1500);
             });
         </script>
-            <div class="grid_3 omega "><p></p></div>
-</div>
-            <div class="grid_16 ending"> Alejandro Cantatore - twitter.com/cthulhu_ar </div>
-
+        <div class="grid_3 omega "><p></p></div>
+    </div>
+    <div class="grid_16 ending"> Alejandro Cantatore - twitter.com/cthulhu_ar </div>
 </div>
 </body>
 </html>
