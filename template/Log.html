@@ -89,7 +89,7 @@
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderallEntries:function(){
-                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entries");
+                var results = $.getValues("/users/{{ nick }}/entries");
                 if (results)
                 { //noinspection JSUnresolvedFunction
                     $("#alist").html($("#allEntriesTemplate").render(results.reverse()));
@@ -101,7 +101,7 @@
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderEntryList:function(){
-                var results = $.getValues("http://localhost:8080/users/{{ nick }}/entry-week");
+                var results = $.getValues("/users/{{ nick }}/entry-week");
                 if (results)
                     { //noinspection JSUnresolvedFunction
                         $("#elist").html($("#entryListTemplate").render(results.reverse()));
@@ -113,7 +113,7 @@
         jQuery.extend({
             drawChart:function(){
                 var line = [];
-                $.getJSON("http://localhost:8080/users/{{ nick }}/entry-week",function(data){})
+                $.getJSON("/users/{{ nick }}/entry-week",function(data){})
                         .success(function(data) {
                             $.each(data,function(index){
                                 line.push([data[index].date+' 0:00 AM',parseFloat(data[index].weight)])
@@ -166,7 +166,7 @@
     <script type="text/javascript" charset="utf-8">
         jQuery.extend({
             renderBioData:function(){
-                var results = $.getValues("http://localhost:8080/users/{{ nick }}/");
+                var results = $.getValues("/users/{{ nick }}/");
                 if (results[0].target){
                 $('body').data('target',results[0].target);
                 $('#in_obj').val($('body').data('target'))
