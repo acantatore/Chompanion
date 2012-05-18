@@ -2,6 +2,7 @@ __author__ = 'alejandro.cantatore'
 #common utilities
 import datetime as dt
 from google.appengine.api import users
+from types import TypeType
 
 def format_datetime(value, format='short'):
     if format == 'short':

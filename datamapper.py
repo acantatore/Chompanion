@@ -42,8 +42,9 @@ class QueryCachedObject(CachedObject):
     def containsCachedObjectType(cachedObjectType):
         return cachedObjectType in ["query"]
     def userByKey(self,key):
-        bq = memcache.get("user_%s"%key)
 
+
+        bq = memcache.get("user_%s"%key)
         if bq is None or len(bq)==0:
             bq = QueryFactory().newQuery("biometrics").getUser(key)
             if not memcache.set("user_%s"%key,bq):
@@ -54,12 +55,12 @@ class QueryCachedObject(CachedObject):
         logging.debug("Creating User")
         return QueryFactory().newQuery("biometrics").createUser(key)
 
-    def updateUser(self,b):
+    def updateUser(self,b,key):
         logging.debug("Updating User")
         if b.put():
             logging.debug("User Updated")
-            if not memcache.set("user_%s"%b.user,b):
-                logging.error("Memcache user_%s"%b.user+" not set")
+            if not memcache.set("user_%s"%key,b.all().fetch(1)):
+                logging.error("Memcache user_%s"%key+" not set")
             logging.debug("Memcache set for User")
 
     def entryByKeyDate(self,key,cd):

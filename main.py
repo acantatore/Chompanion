@@ -1,4 +1,3 @@
-
 from decimal import *
 import logging
 import urllib,hashlib
@@ -46,7 +45,6 @@ class RootHandler(webapp2.RequestHandler):
     """ This is the entry point class for Chompanion, handles the template construction
         get()
     """
-
     def get(self):
         """ This is the entry point method for Chompanion. The path is "/"
         """
@@ -105,7 +103,6 @@ class RootHandler(webapp2.RequestHandler):
             return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
-
     """ This handles the main screen and User Bio Data updates
         get()
         put()
@@ -133,11 +130,8 @@ class UserOverviewHandler(webapp2.RequestHandler):
             else:
                 self.validateUserBiometrics(bq,height,target,weight)
 
-
-
     def createUserBiometrics(self,ba,height,target,weight):
         self.loadBiometrics(ba,height,target,weight)
-
 
     def validateUserBiometrics(self,bq,height,target,weight):
         for b in bq:
@@ -155,7 +149,7 @@ class UserOverviewHandler(webapp2.RequestHandler):
             b.bmi = float(bmi)
         else:
             b.bmi = 0.00
-        DataMapper().new("query").updateUser(b)
+        DataMapper().new("query").updateUser(b, users.get_current_user().user_id())
 
 class EntryHandler(webapp2.RequestHandler):
 
@@ -174,9 +168,7 @@ class EntryHandler(webapp2.RequestHandler):
             if ac.checkUser(user):
                 key =users.get_current_user().user_id()
                 eq=DataMapper().new("query").entryByKeyDate(key,cd)
-                # bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
                 if eq.count(1) != 0:
-                    #JSON
                     self.response.write(json.encode([e.to_dict() for e in eq]))
 
     def getPostValues(self,cd):
