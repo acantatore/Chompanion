@@ -39,7 +39,6 @@ class EntryQueries(Query):
         rset.order(orderby)
         return rset.fetch(rows)
 
-
     def createEntry(self,key):
         return Entry(parent=log_key(key))
 
@@ -48,7 +47,7 @@ class EntryQueries(Query):
         date=dc.parseCurrentDate(logDate)
         rset = self.entryRsetBuilder(key)
         rset.filter('date =',date)
-        return  rset
+        return  rset.fetch(1)
 
     def getEntryZeroBMI(self,key):
         rset = self.entryRsetBuilder(key)
@@ -72,11 +71,7 @@ class EntryQueries(Query):
         return  rset
 
     def getEntryWeek(self,key):
-        rset = memcache.get("entry_week_%s"%key)
-        if rset is None or rset.count(1) == 0:
-            rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
-            if not memcache.set("entry_week_%s"%key,rset):
-                logging.error("Error Setting Memcache")
+        rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
         return rset
 
     def getAllEntries(self,key):

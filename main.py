@@ -168,7 +168,7 @@ class EntryHandler(webapp2.RequestHandler):
             if ac.checkUser(user):
                 key =users.get_current_user().user_id()
                 eq=DataMapper().new("query").entryByKeyDate(key,cd)
-                if eq.count(1) != 0:
+                if len(eq) != 0:
                     self.response.write(json.encode([e.to_dict() for e in eq]))
 
     def getPostValues(self,cd):
@@ -185,14 +185,12 @@ class EntryHandler(webapp2.RequestHandler):
             key = values['userid']
             eq=DataMapper().new("query").entryByKeyDate(key,cd)
             bq = DataMapper().new("query").userByKey(key)
-            if eq.count(1) == 0:
-                self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'], bq[0].height)
+            if len(eq) == 0:
+                self.createUserEntry(DataMapper().new("query").newEntry(values['userid']),values['weight'],values['variance'],values['date'], bq[0].height)
             else:
                 self.validateUserEntry(eq,values['weight'],values['variance'],values['date'], bq[0].height)
 
         self.redirect('/users/%s/'% users.get_current_user().nickname())
-
-
 
     def put(self,user,cd):
         if self.isAuthenticated(user,cd):
@@ -203,7 +201,6 @@ class EntryHandler(webapp2.RequestHandler):
             if eq.count(1) == 1:
                 self.validateUserEntry(eq,values['weight'],values['variance'],values['date'],bq[0].height)
 
-
     def delete(self,user,cd):
         if self.isAuthenticated(user,cd):
             rset=QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd).fetch(1)
@@ -212,13 +209,10 @@ class EntryHandler(webapp2.RequestHandler):
 
     def createUserEntry(self,ea,weight,variance,date,height):
         self.loadEntry(ea,weight,variance,date,height)
-        if not memcache.add("entry_cd%s_%s"%(date,users.get_current_user().user_id()),ea):
-            logging.error("Error Setting Memcache - get")
+
     def validateUserEntry(self,eq,weight,variance,date,height):
         for e in eq:
             self.loadEntry(e,weight,variance,date,height)
-        if not memcache.set("entry_cd%s_%s"%(date,users.get_current_user().user_id()),eq):
-            logging.error("Error Setting Memcache - get")
 
     def loadEntry(self,e,weight,variance,date,height):
         e.user = users.get_current_user()
@@ -230,7 +224,7 @@ class EntryHandler(webapp2.RequestHandler):
             e.bmi = 0.00
         e.variance = variance
         e.date = date
-        e.put()
+        DataMapper().new("query").updateEntry(e,date,users.get_current_user().user_id())
 
 class EntryListHandler(webapp2.RequestHandler):
     def get(self,user,sd,ed):
@@ -238,6 +232,7 @@ class EntryListHandler(webapp2.RequestHandler):
         if user and ac.checkUser(user):
                 self.response.write(
                     jsonBuilder.encodeResponse(
+
                         QueryFactory().newQuery("entries").getEntryList(users.get_current_user().user_id(),sd,ed)
                     )
                 )
@@ -249,9 +244,10 @@ class EntryWeekHandler(webapp2.RequestHandler):
         if user and ac.checkUser(user):
                 self.response.write(
                     jsonBuilder.encodeResponse(
-                        QueryFactory.newQuery("entries").getEntryWeek(users.get_current_user().user_id())
+                        DataMapper().new("query").entryWeek(users.get_current_user().user_id())
                     )
                 )
+
 class EntryAllEntriesHandler(webapp2.RequestHandler):
     def get(self,user):
         ac = AuthCheck()

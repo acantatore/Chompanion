@@ -42,12 +42,10 @@ class QueryCachedObject(CachedObject):
     def containsCachedObjectType(cachedObjectType):
         return cachedObjectType in ["query"]
     def userByKey(self,key):
-
-
-        bq = memcache.get("user_%s"%key)
+        bq = deserialize_entities(memcache.get("user_%s"%key))
         if bq is None or len(bq)==0:
             bq = QueryFactory().newQuery("biometrics").getUser(key)
-            if not memcache.set("user_%s"%key,bq):
+            if not memcache.set("user_%s"%key,serialize_entities(bq)):
                 logging.error("Memcache Set Failed - Get")
         return bq
 
@@ -59,18 +57,39 @@ class QueryCachedObject(CachedObject):
         logging.debug("Updating User")
         if b.put():
             logging.debug("User Updated")
-            if not memcache.set("user_%s"%key,b.all().fetch(1)):
+            if not memcache.set("user_%s"%key,serialize_entities(b.all().fetch(1))):
                 logging.error("Memcache user_%s"%key+" not set")
             logging.debug("Memcache set for User")
 
+    def entryWeek(self,key):
+        logging.debug("Get Entry Week by Key")
+        eq = deserialize_entities(memcache.get("entry_week_%s"%key))
+        if eq is None or len(eq)==0:
+            eq = QueryFactory.newQuery("entries").getEntryWeek(key)
+            if not memcache.set("entry_week_%s"%key,serialize_entities(eq)):
+                logging.error("Error setting memcache")
+        return eq
+
     def entryByKeyDate(self,key,cd):
-        eq = memcache.get("entry_cd%s_%s"%(cd,key))
-        if eq is None:
+        eq = deserialize_entities(memcache.get("entry_cd%s_%s"%(cd,key)))
+        if eq is None or len(eq)==0:
             eq = QueryFactory().newQuery("entries").getEntry(key,cd)
-            if not memcache.add("entry_cd%s_%s"%(cd,key),eq):
+            if not memcache.set("entry_cd%s_%s"%(cd,key),serialize_entities(eq)):
                 logging.error("Error Setting Memcache - get")
         return eq
 
+    def newEntry(self,key):
+        logging.debug("CreatingEntry")
+        return QueryFactory().newQuery("entries").createEntry(key)
+
+    def updateEntry(self,e,cd,key):
+        logging.debug("Updating Entry")
+        if e.put():
+            logging.debug("Entry Updated")
+            if not memcache.set("entry_cd%s_%s"%(cd,key),serialize_entities(e.all().fetch(1))):
+                logging.error("Memcache Entry set failed")
+            memcache.delete("entry_week_%s"%key)
+            logging.debug("Memcache set for Entry")
 
 #Cache Factory
 class DataMapper(object):
