@@ -70,6 +70,15 @@ class QueryCachedObject(CachedObject):
                 logging.error("Error setting memcache")
         return eq
 
+    def entryAll(self,key):
+        logging.debug("Get all entries")
+        eq = deserialize_entities(memcache.get("entry_all_entries_%s"%key))
+        if eq is None or len(eq)==0:
+            eq=QueryFactory.newQuery("entries").getAllEntries(key)
+            if not memcache.set("entry_all_entries_%s"%key,serialize_entities(eq)):
+                logging.error("Error Setting Memcache")
+        return eq
+
     def entryByKeyDate(self,key,cd):
         eq = deserialize_entities(memcache.get("entry_cd%s_%s"%(cd,key)))
         if eq is None or len(eq)==0:
@@ -89,6 +98,7 @@ class QueryCachedObject(CachedObject):
             if not memcache.set("entry_cd%s_%s"%(cd,key),serialize_entities(e.all().fetch(1))):
                 logging.error("Memcache Entry set failed")
             memcache.delete("entry_week_%s"%key)
+            memcache.delete("entry_all_entries_%s"%key)
             logging.debug("Memcache set for Entry")
 
 #Cache Factory

@@ -75,13 +75,9 @@ class EntryQueries(Query):
         return rset
 
     def getAllEntries(self,key):
-        rset = memcache.get("entry_all_entries_%s"%key)
-        if rset is None:
-            rset = self.entryRsetBuilder(key)
-            rset.order("-date")
-            if not memcache.set("entry_all_entries_%s"%key,rset):
-                logging.error("Error Setting Memcache")
-        return rset
+        rset = self.entryRsetBuilder(key)
+        rset.order("-date")
+        return rset.fetch(1000)
 
 class QueryFactory(object):
     @staticmethod

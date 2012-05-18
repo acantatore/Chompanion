@@ -254,7 +254,7 @@ class EntryAllEntriesHandler(webapp2.RequestHandler):
         if user and ac.checkUser(user):
             self.response.write(
                 jsonBuilder.encodeResponse(
-                QueryFactory.newQuery("entries").getAllEntries(users.get_current_user().user_id())
+                    DataMapper().new("query").entryAll(users.get_current_user().user_id())
             )
             )
 
