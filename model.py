@@ -2,6 +2,7 @@ __author__ = 'alejandro.cantatore'
 
 from google.appengine.ext import db
 from datetime import datetime
+
 class DictModel(db.Model):
     def to_dict(self):
         return dict([(p, unicode(getattr(self, p))) for p in self.properties()])

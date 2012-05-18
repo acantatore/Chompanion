@@ -10,7 +10,8 @@ from main import AuthCheck
 from main import EntryWeekHandler
 from main import format_datetime
 from main import BMICheck
-from main import ValidationFactory,Validation,Query,QueryFactory
+from main import Validator,Validation
+from datagateway import Query,QueryFactory
 from main import EntryAllEntriesHandler
 from model import Entry,log_key
 from model import Biometric,bio_key
@@ -56,28 +57,28 @@ class MainTest(unittest.TestCase):
 
     def EntriesValidations_validationsTest(self):
 
-        actual=ValidationFactory().newValidation("entries").validateWeight(None)
+        actual=Validator().new("entries").isValidWeight(None)
         expected=0.0
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("entries").validateWeight(10.5)
+        actual=Validator().new("entries").isValidWeight(10.5)
         expected=10.5
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("entries").validateVariance(None)
+        actual=Validator().new("entries").isValidVariance(None)
         expected=0.0
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("entries").validateVariance(10.5)
+        actual=Validator().new("entries").isValidVariance(10.5)
         expected=10.5
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("biometrics").validateTarget(None)
+        actual=Validator().new("biometrics").isValidTarget(None)
         expected=0.0
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("biometrics").validateTarget(10.5)
+        actual=Validator().new("biometrics").isValidTarget(10.5)
         expected=10.5
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("biometrics").validateHeight(None)
+        actual=Validator().new("biometrics").isValidHeight(None)
         expected=0.0
         self.assertEquals(actual,expected)
-        actual=ValidationFactory().newValidation("biometrics").validateHeight(10)
+        actual=Validator().new("biometrics").isValidHeight(10)
         expected=10
         self.assertEquals(actual,expected)
         v=Validation()
@@ -91,7 +92,7 @@ class MainTest(unittest.TestCase):
         actual=q.containsQueryType("test")
         expected=False
         self.assertEquals(actual,expected)
-        self.assertRaises(ValueError,ValidationFactory().newValidation,('bio'))
+        self.assertRaises(ValueError,Validator().new,('bio'))
         self.assertRaises(ValueError,QueryFactory().newQuery,('bio'))
     def AuthCheck_checkUserTest(self):
         ac = AuthCheck()
