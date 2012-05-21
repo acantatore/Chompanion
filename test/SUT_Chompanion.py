@@ -219,7 +219,7 @@ class MainTest(unittest.TestCase):
         #Put Test
         handler.put(user=nick,cd='2012-10-10')
         handler.put(user=nick,cd='2012-10-15')
-        handler.delete(user=nick,cd='2012-10-10')
+#        handler.delete(user=nick,cd='2012-10-10')
 
     def EntryListHandler_getTest(self):
         request = webapp2.Request.blank('/')

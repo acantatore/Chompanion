@@ -56,7 +56,7 @@ class RootHandler(webapp2.RequestHandler):
             template = jinja_environment.get_template('/template/Log.html')
             return template.render(self.buildTemplate(userid,uri))
         else:
-            template_values = memcache.get("template")
+
             if template_values is not None:
                 return template_values
             else:
@@ -66,13 +66,11 @@ class RootHandler(webapp2.RequestHandler):
                     'url': url,
                     'url_linktext': url_linktext,
                     }
-                if not memcache.add("template",template_values):
-                    logging.error("Memcache set failed")
+
                 template = jinja_environment.get_template('/template/Login.html')
                 return template.render(template_values)
 
     def buildTemplate(self,userId,uri):
-        template_values = memcache.get("template_%s"%userId)
         if template_values is not None:
             return template_values
         else:
@@ -98,8 +96,7 @@ class RootHandler(webapp2.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext,
                 }
-            if not memcache.add("template_%s"%userId,template_values):
-                logging.error("Memcache set failed.")
+
             return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
