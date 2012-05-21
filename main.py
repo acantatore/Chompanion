@@ -6,7 +6,7 @@ from webapp2_extras import json
 import webapp2
 
 from google.appengine.api import users
-from google.appengine.api import memcache
+
 import jinja2
 import os
 
@@ -56,48 +56,42 @@ class RootHandler(webapp2.RequestHandler):
             template = jinja_environment.get_template('/template/Log.html')
             return template.render(self.buildTemplate(userid,uri))
         else:
-
-            if template_values is not None:
-                return template_values
-            else:
-                url = users.create_login_url(uri)
-                url_linktext = 'Login'
-                template_values = {
-                    'url': url,
-                    'url_linktext': url_linktext,
-                    }
-
-                template = jinja_environment.get_template('/template/Login.html')
-                return template.render(template_values)
-
-    def buildTemplate(self,userId,uri):
-        if template_values is not None:
-            return template_values
-        else:
-            bq = DataMapper().new("query").userByKey(userId)
-
-            if len(bq) == 0:
-                UserOverviewHandler.loadBiometrics(QueryFactory().newQuery("biometrics").createUser(userId),None,None,None)
-            url = users.create_logout_url(uri)
-            url_linktext = 'Logout'
-            nick = users.get_current_user().nickname()
-            # Set your variables here
-            email = users.get_current_user().email()
-
-            size = 40
-
-            # construct the url
-            gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
-            gravatar_url += urllib.urlencode({'d':'retro', 's':str(size)})
+            url = users.create_login_url(uri)
+            url_linktext = 'Login'
             template_values = {
-                'uid':userId,
-                'nick': nick,
-                'gurl': gravatar_url,
                 'url': url,
                 'url_linktext': url_linktext,
                 }
 
-            return template_values
+            template = jinja_environment.get_template('/template/Login.html')
+            return template.render(template_values)
+
+    def buildTemplate(self,userId,uri):
+
+        bq = DataMapper().new("query").userByKey(userId)
+
+        if len(bq) == 0:
+            UserOverviewHandler.loadBiometrics(QueryFactory().newQuery("biometrics").createUser(userId),None,None,None)
+        url = users.create_logout_url(uri)
+        url_linktext = 'Logout'
+        nick = users.get_current_user().nickname()
+        # Set your variables here
+        email = users.get_current_user().email()
+
+        size = 40
+
+        # construct the url
+        gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+        gravatar_url += urllib.urlencode({'d':'retro', 's':str(size)})
+        template_values = {
+            'uid':userId,
+            'nick': nick,
+            'gurl': gravatar_url,
+            'url': url,
+            'url_linktext': url_linktext,
+            }
+
+        return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
     """ This handles the main screen and User Bio Data updates
