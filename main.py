@@ -1,5 +1,6 @@
 from types import TypeType
 from decimal import *
+import logging
 import urllib,hashlib
 import datetime as dt
 from datetime import timedelta
@@ -13,6 +14,7 @@ from model import Entry, log_key
 from model import Biometric, bio_key
 
 from google.appengine.api import users
+from google.appengine.api import memcache
 
 import jinja2
 import os
@@ -28,7 +30,42 @@ def format_datetime(value, format='short'):
     return dt.datetime.strftime(value, format)
 
 jinja_environment.filters['datetime'] = format_datetime
+class CachedObject(object):
+    @staticmethod
+    def containsCachedObjectType(cachedObjectType):
+        return False
+    def getCachedObject(self):
+        return 0
+class QueryCachedObject(CachedObject):
+    @staticmethod
+    def containsCachedObjectType(cachedObjectType):
+        return cachedObjectType in ["query"]
+    def cachedQueryUserByKey(self,key):
+        bq = memcache.get("user_%s"%key)
+        if bq is None:
+            bq = QueryFactory().newQuery("biometrics").getUser(key)
+            if not memcache.add("user_%s"%key,bq):
+                logging.error("Memcache Set Failed - Get")
+        return bq
+    def cachedQueryEntryByKeyDate(self,key,cd):
+        eq = memcache.get("entry_cd%s_%s"%(cd,key))
+        if eq is None:
+            eq = QueryFactory().newQuery("entries").getEntry(key,cd)
+            if not memcache.add("entry_cd%s_%s"%(cd,key),eq):
+                logging.error("Error Setting Memcache - get")
+        return eq
 
+
+
+class CachedObjectFactory(object):
+    @staticmethod
+    def newCachedObject(cachedObjectType):
+        cachedObjectClasses = [j for (i,j) in globals().iteritems() if isinstance(j, TypeType) and issubclass(j, CachedObject)]
+        for cachedObjectClass in cachedObjectClasses :
+            if cachedObjectClass.containsCachedObjectType(cachedObjectType):
+                return cachedObjectClass()
+                #if research was unsuccessful, raise an error
+        raise ValueError('No validation containing "%s".' % cachedObjectType)
 class Validation(object):
     @staticmethod
     def containsValidationType(validationType):
@@ -129,21 +166,33 @@ class EntryQueries(Query):
         return  Entry.all().ancestor(log_key(key)).order("-date")
 
     def getEntryList(self,key,sd,ed):
-        dc = DateCheck()
-        startdate=dc.parseCurrentDate(sd)
-        enddate=dc.parseCurrentDate(ed)
-        rset = self.entryRsetBuilder(key)
-        rset.filter('date >=',startdate)
-        rset.filter('date <=',enddate)
+        rset = memcache.get("entry_list_%s_sd_%s_ed_%s"%(key,sd,ed))
+        if rset is None:
+            dc = DateCheck()
+            startdate=dc.parseCurrentDate(sd)
+            enddate=dc.parseCurrentDate(ed)
+            rset = self.entryRsetBuilder(key)
+            rset.filter('date >=',startdate)
+            rset.filter('date <=',enddate)
+            if not memcache.set("entry_list_%s_sd_%s_ed_%s"%(key,sd,ed),rset):
+                logging.error("Error Setting Memcache")
         return  rset
 
     def getEntryWeek(self,key):
-        rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
+        rset = memcache.get("entry_week_%s"%key)
+        if rset is None or rset.count(1) == 0:
+            rset = self.entryRsetBuilderOrderByFetchNum(key,"-date",7)
+            if not memcache.set("entry_week_%s"%key,rset):
+                logging.error("Error Setting Memcache")
         return rset
 
     def getAllEntries(self,key):
-        rset = self.entryRsetBuilder(key)
-        rset.order("-date")
+        rset = memcache.get("entry_all_entries_%s"%key)
+        if rset is None:
+            rset = self.entryRsetBuilder(key)
+            rset.order("-date")
+            if not memcache.set("entry_all_entries_%s"%key,rset):
+                logging.error("Error Setting Memcache")
         return rset
 
 class QueryFactory(object):
@@ -195,51 +244,66 @@ class RootHandler(webapp2.RequestHandler):
     """ This is the entry point class for Chompanion, handles the template construction
         get()
     """
+
     def get(self):
         """ This is the entry point method for Chompanion. The path is "/"
         """
         self.response.out.write(self.createTemplate(users.get_current_user(), self.request.uri))
 
-    def createTemplate(self, currentUser, uri):
+    def createTemplate(self,currentUser, uri):
         if currentUser:
             userid=users.get_current_user().user_id()
             template = jinja_environment.get_template('/template/Log.html')
             return template.render(self.buildTemplate(userid,uri))
         else:
-            url = users.create_login_url(uri)
-            url_linktext = 'Login'
+            template_values = memcache.get("template")
+            if template_values is not None:
+                return template_values
+            else:
+                url = users.create_login_url(uri)
+                url_linktext = 'Login'
+                template_values = {
+                    'url': url,
+                    'url_linktext': url_linktext,
+                    }
+                if not memcache.add("template",template_values):
+                    logging.error("Memcache set failed")
+                template = jinja_environment.get_template('/template/Login.html')
+                return template.render(template_values)
+
+    def buildTemplate(self,userId,uri):
+        template_values = memcache.get("template_%s"%userId)
+        if template_values is not None:
+            return template_values
+        else:
+            bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(userId)
+
+            if bq.count() == 0:
+                UserOverviewHandler.loadBiometrics(QueryFactory().newQuery("biometrics").createUser(userId),None,None,None)
+            url = users.create_logout_url(uri)
+            url_linktext = 'Logout'
+            nick = users.get_current_user().nickname()
+            # Set your variables here
+            email = users.get_current_user().email()
+
+            size = 40
+
+            # construct the url
+            gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
+            gravatar_url += urllib.urlencode({'d':'retro', 's':str(size)})
             template_values = {
+                'uid':userId,
+                'nick': nick,
+                'gurl': gravatar_url,
                 'url': url,
                 'url_linktext': url_linktext,
                 }
-            template = jinja_environment.get_template('/template/Login.html')
-            return template.render(template_values)
-
-    def buildTemplate(self,userId,uri):
-        bq = QueryFactory().newQuery("biometrics").getUser(userId)
-        eq = QueryFactory().newQuery("entries").getEntrybyDateDesc(userId)
-        url = users.create_logout_url(uri)
-        url_linktext = 'Logout'
-        nick = users.get_current_user().nickname()
-        # Set your variables here
-        email = users.get_current_user().email()
-        default = "/static/noavatar.jpg"
-        size = 40
-
-        # construct the url
-        gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(email.lower()).hexdigest() + "?"
-        gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
-        template_values = {
-            'uid':userId,
-            'nick': nick,
-            'gurl': gravatar_url,
-            'url': url,
-            'url_linktext': url_linktext,
-            }
-
-        return template_values
+            if not memcache.add("template_%s"%userId,template_values):
+                logging.error("Memcache set failed.")
+            return template_values
 
 class UserOverviewHandler(webapp2.RequestHandler):
+
     """ This handles the main screen and User Bio Data updates
         get()
         put()
@@ -251,7 +315,7 @@ class UserOverviewHandler(webapp2.RequestHandler):
         if user:
             key = users.get_current_user().user_id()
             BMICheck.updateBMI(self,user)
-            bq = QueryFactory().newQuery("biometrics").getUser(key)
+            bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
             if bq.count(1) != 0:
                 self.response.write(json.encode([b.to_dict() for b in bq]))
 
@@ -260,9 +324,8 @@ class UserOverviewHandler(webapp2.RequestHandler):
             height=ValidationFactory().newValidation("biometrics").validateHeight(self.request.get('height'))
             target=ValidationFactory().newValidation("biometrics").validateTarget(self.request.get('target'))
             weight=ValidationFactory().newValidation("entries").validateWeight(self.request.get('weight'))
-
             key = users.get_current_user().user_id()
-            bq= QueryFactory().newQuery("biometrics").getUser(key)
+            bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
             if bq.count(1) == 0:
                 self.createUserBiometrics(QueryFactory().newQuery("biometrics").createUser(key),height,target,weight)
             else:
@@ -271,16 +334,22 @@ class UserOverviewHandler(webapp2.RequestHandler):
 
 
     def createUserBiometrics(self,ba,height,target,weight):
-            self.loadBiometrics(ba,height,target,weight)
+        self.loadBiometrics(ba,height,target,weight)
+        if not memcache.add("user_%s"%users.get_current_user().user_id(),bq):
+            logging.error("Memcache Set Failed - validateUserBiometrics")
 
     def validateUserBiometrics(self,bq,height,target,weight):
         for b in bq:
             self.loadBiometrics(b,height,target,weight)
-
-    def loadBiometrics(self,b,height,target,weight):
+        if not memcache.set("user_%s"%users.get_current_user().user_id(),bq):
+            logging.error("Memcache Set Failed - validateUserBiometrics")
+    @staticmethod
+    def loadBiometrics(b,height,target,weight):
         b.user = users.get_current_user()
-        b.height = height
-        b.target = target
+        if height>0:
+            b.height = height
+        if target>0:
+            b.target = target
         if weight and height > 0:
             bmi=Decimal((weight) / (height/100.0)**2.0).quantize(Decimal('.01'),rounding=ROUND_UP)
             b.bmi = float(bmi)
@@ -303,8 +372,9 @@ class EntryHandler(webapp2.RequestHandler):
         ac = AuthCheck()
         if user:
             if ac.checkUser(user):
-
-                eq = QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd)
+                key =users.get_current_user().user_id()
+                eq=CachedObjectFactory().newCachedObject("query").cachedQueryEntryByKeyDate(key,cd)
+                # bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
                 if eq.count(1) != 0:
                     #JSON
                     self.response.write(json.encode([e.to_dict() for e in eq]))
@@ -320,8 +390,9 @@ class EntryHandler(webapp2.RequestHandler):
     def post(self,user,cd):
         if self.isAuthenticated(user,cd):
             values = self.getPostValues(cd)
-            eq=QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
-            bq= QueryFactory().newQuery("biometrics").getUser(values['userid'])
+            key = values['userid']
+            eq=CachedObjectFactory().newCachedObject("query").cachedQueryEntryByKeyDate(key,cd)
+            bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
             if eq.count(1) == 0:
                 self.createUserEntry(QueryFactory().newQuery("entries").createEntry(values['userid']),values['weight'],values['variance'],values['date'], bq[0].height)
             else:
@@ -334,11 +405,13 @@ class EntryHandler(webapp2.RequestHandler):
     def put(self,user,cd):
         if self.isAuthenticated(user,cd):
             values = self.getPostValues(cd)
-            eq = QueryFactory().newQuery("entries").getEntry(values['userid'],cd)
-            bq= QueryFactory().newQuery("biometrics").getUser(values['userid'])
+            key = values['userid']
+            eq=CachedObjectFactory().newCachedObject("query").cachedQueryEntryByKeyDate(key,cd)
+            bq = CachedObjectFactory().newCachedObject("query").cachedQueryUserByKey(key)
             if eq.count(1) == 1:
                 self.validateUserEntry(eq,values['weight'],values['variance'],values['date'],bq[0].height)
-    #PAtron Factory para los queryhandlers
+
+
     def delete(self,user,cd):
         if self.isAuthenticated(user,cd):
             rset=QueryFactory().newQuery("entries").getEntry(users.get_current_user().user_id(),cd).fetch(1)
@@ -347,10 +420,13 @@ class EntryHandler(webapp2.RequestHandler):
 
     def createUserEntry(self,ea,weight,variance,date,height):
         self.loadEntry(ea,weight,variance,date,height)
-
+        if not memcache.add("entry_cd%s_%s"%(date,users.get_current_user().user_id()),ea):
+            logging.error("Error Setting Memcache - get")
     def validateUserEntry(self,eq,weight,variance,date,height):
         for e in eq:
             self.loadEntry(e,weight,variance,date,height)
+        if not memcache.set("entry_cd%s_%s"%(date,users.get_current_user().user_id()),eq):
+            logging.error("Error Setting Memcache - get")
 
     def loadEntry(self,e,weight,variance,date,height):
         e.user = users.get_current_user()
